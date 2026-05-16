@@ -29,13 +29,13 @@ exec-weekly-summary/
 │   ├── server/  →   后端
 │   ├── shared/  →   共享类型/工具
 │   └── config/  →   配置文件
-├── AGENTS.md    → AI 开发助手使用说明
+├── CLAUDE.md    → AI 开发助手使用说明（CodeBuddy 自动加载）
 └── README.md    → 本文件
 ```
 
 ## 开发规范
 
-所有开发规范详见 [AGENTS.md](./AGENTS.md)，请参与开发的 AI 助手在动手前先完整阅读。
+所有开发规范详见 [CLAUDE.md](./CLAUDE.md)，请参与开发的 AI 助手在动手前先完整阅读。
 
 ---
 
