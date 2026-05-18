@@ -1,0 +1,52 @@
+<div class="zone zone-overview">
+  <div class="zone-inner">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <span class="section-title">本周动态速览</span>
+    </div>
+    <div class="card">
+      <div class="sub-section-title">▎业务体检区</div>
+      <div class="health-grid">
+        <% report.healthCheck.items.forEach(function(item){ %>
+        <div class="health-item">
+          <div class="label"><%= item.team %> · <%= item.metric %></div>
+          <div class="value"><span class="dot <%= item.status %>"></span> <%= item.value %> · <%= item.detail %></div>
+        </div>
+        <% }) %>
+      </div>
+      <div class="event-list">
+        <% report.events.forEach(function(evt){ %>
+        <div class="event-item">
+          <span class="event-icon"><% if(evt.status==='red'){%>🔴<%}else{%>🟡<%}%></span>
+          <div class="event-body"><strong><%= evt.title %></strong> — <%= evt.description %></div>
+        </div>
+        <% }) %>
+      </div>
+      <div class="sub-section-title" style="margin-top:20px">▎团队动态区</div>
+      <div class="event-list">
+        <div class="event-item">
+          <span class="event-icon">📅</span>
+          <div class="event-body"><strong>1on1 待覆盖</strong> — <%= report.teamUpdates.oneOnOne.members.join('、') %> 超过 2 周未进行一对一，<%= report.teamUpdates.oneOnOne.note %>。</div>
+        </div>
+        <div class="event-item">
+          <span class="event-icon">👋</span>
+          <div class="event-body">
+            <strong>本周人事</strong> —
+            <% report.teamUpdates.personnelChanges.forEach(function(p, idx){ %>
+              <% if(p.type==='onboard'){%>入职：<%= p.department %><%= p.name %>（<%= p.role %>）<%}else{%>离职：<%= p.department %><%= p.name %><%}%>
+              <% if(idx < report.teamUpdates.personnelChanges.length - 1){%>；<%}%>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <div class="people-grid">
+        <% report.teamUpdates.importantDates.forEach(function(d){ %>
+        <div class="people-item">
+          <div class="people-name"><% if(d.type==='birthday'){%>🎂<%}else{%>🎉<%}%> <%= d.name %></div>
+          <div class="people-detail"><%= d.date %> <% if(d.type==='birthday'){%>生日<%}else{%>入职 <%= d.years %> 周年<%}%> · <%= d.department %></div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</div>

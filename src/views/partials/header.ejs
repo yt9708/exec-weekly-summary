@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= typeof title !== 'undefined' ? title : '本周总结' %> · 高管周总结</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  background: #ffffff; color: #0d253d; font-weight: 300; line-height: 1.6; font-feature-settings: "ss01";
+}
+.header { border-bottom:1px solid #e3e8ee; background:#fff; }
+.header-inner { max-width:720px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px; }
+.header-left { display:flex; align-items:center; gap:12px; }
+.header-title { font-size:20px; font-weight:300; letter-spacing:-0.4px; color:#0d253d; }
+.header-badge { font-size:10px; padding:3px 8px; background:#b9b9f9; color:#4434d4; border-radius:9999px; font-weight:400; letter-spacing:0.1px; }
+.header-right { display:flex; align-items:center; gap:14px; }
+.week-label { font-size:13px; color:#64748d; font-feature-settings:"tnum"; }
+.avatar { width:30px; height:30px; border-radius:9999px; background:#533afd; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:400; }
+.nav-bar { background:#fff; border-bottom:1px solid #e3e8ee; }
+.nav-inner { max-width:720px; margin:0 auto; padding:12px 24px; display:flex; gap:8px; align-items:center; }
+.nav-pill { font-size:13px; font-weight:400; padding:5px 14px; border-radius:9999px; color:#64748d; text-decoration:none; transition:all .15s; }
+.nav-pill:hover { background:#f6f9fc; color:#0d253d; }
+.nav-pill.active { background:#533afd; color:#fff; }
+.nav-spacer { flex:1; }
+.nav-icon { font-size:15px; padding:5px 10px; border-radius:9999px; color:#64748d; cursor:pointer; }
+.nav-icon:hover { background:#f6f9fc; }
+.push-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:4px 12px; background:#d1fae5; color:#065f46; border-radius:9999px; font-weight:400; margin-bottom:18px; }
+.zone { padding:40px 0; }
+.zone-inner { max-width:720px; margin:0 auto; padding:0 24px; }
+.zone-summary { background:#f6f9fc; }
+.zone-decisions { background:#fff; }
+.zone-overview { background:linear-gradient(180deg,#f6f9fc 0%,#fff 100%); }
+.zone-warning { background:#f6f9fc; }
+.section-header { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.section-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; background:#edf2f7; }
+.section-title { font-size:18px; font-weight:300; letter-spacing:-0.36px; color:#0d253d; }
+.section-sub { font-size:12px; color:#64748d; margin-left:auto; font-feature-settings:"tnum"; }
+.card { background:#fff; border-radius:12px; padding:24px; border:1px solid #e3e8ee; box-shadow:rgba(0,55,112,0.06) 0 1px 3px; }
+.summary-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; }
+.summary-item+.summary-item { border-top:1px solid #e3e8ee; }
+.summary-dot { width:9px; height:9px; border-radius:50%; margin-top:7px; flex-shrink:0; }
+.summary-dot.green { background:#10b981; } .summary-dot.yellow { background:#f59e0b; } .summary-dot.red { background:#ef4444; }
+.summary-text { font-size:14px; font-weight:300; line-height:1.7; color:#273951; }
+.summary-text strong { font-weight:400; color:#0d253d; }
+.summary-actions { margin-top:14px; padding-top:14px; border-top:1px solid #e3e8ee; display:flex; gap:10px; }
+.summary-btn { font-size:12px; font-weight:400; padding:6px 16px; border-radius:9999px; border:none; background:#f6f9fc; color:#533afd; cursor:pointer; font-family:inherit; transition:all .15s; }
+.summary-btn:hover { background:#533afd; color:#fff; }
+.decision-item { display:flex; gap:14px; align-items:flex-start; padding:14px 0; }
+.decision-item+.decision-item { border-top:1px solid #e3e8ee; }
+.decision-tag { width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.decision-tag.action { background:#fef2f2; } .decision-tag.decision { background:#fffbeb; } .decision-tag.info { background:#eff6ff; }
+.decision-body { flex:1; min-width:0; }
+.decision-title { font-size:14px; font-weight:400; margin-bottom:4px; cursor:pointer; color:#0d253d; }
+.decision-title:hover { color:#533afd; }
+.decision-desc { font-size:13px; font-weight:300; color:#64748d; line-height:1.6; }
+.decision-meta { display:flex; gap:8px; align-items:center; margin-top:6px; flex-wrap:wrap; }
+.decision-source { font-size:10px; padding:2px 8px; border-radius:9999px; background:#f6f9fc; color:#64748d; font-weight:400; letter-spacing:0.1px; }
+.decision-link { font-size:12px; color:#533afd; text-decoration:none; font-weight:400; }
+.decision-link:hover { text-decoration:underline; }
+.folded-items { text-align:center; padding:12px; font-size:12px; color:#64748d; background:#f6f9fc; border-radius:8px; border:1px dashed #e3e8ee; margin-top:8px; cursor:pointer; }
+.folded-items:hover { background:#e3e8ee; color:#0d253d; }
+.sub-section-title { font-size:12px; font-weight:400; color:#64748d; margin-bottom:12px; letter-spacing:0.1px; }
+.health-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.health-item { background:#f6f9fc; border-radius:8px; padding:14px 16px; }
+.health-item .label { font-size:11px; color:#64748d; margin-bottom:4px; font-weight:400; }
+.health-item .value { font-size:14px; font-weight:400; display:flex; align-items:center; gap:8px; font-feature-settings:"tnum"; }
+.dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+.dot.green { background:#10b981; } .dot.yellow { background:#f59e0b; } .dot.red { background:#ef4444; }
+.event-item { display:flex; gap:10px; align-items:flex-start; padding:10px 0; }
+.event-item+.event-item { border-top:1px solid #e3e8ee; }
+.event-icon { font-size:13px; flex-shrink:0; margin-top:3px; }
+.event-body { font-size:13px; font-weight:300; color:#64748d; line-height:1.6; }
+.event-body strong { font-weight:400; color:#0d253d; }
+.people-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.people-item { background:#f6f9fc; border-radius:8px; padding:12px 14px; }
+.people-name { font-size:13px; font-weight:400; }
+.people-detail { font-size:11px; color:#64748d; font-weight:300; }
+.warn-item { padding:14px 0; }
+.warn-item+.warn-item { border-top:1px solid #e3e8ee; }
+.warn-title { font-size:14px; font-weight:400; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.warn-desc { font-size:13px; font-weight:300; color:#64748d; line-height:1.6; }
+.warn-prep { font-size:11px; color:#f59e0b; margin-top:4px; font-feature-settings:"tnum"; }
+.footer { text-align:center; padding:40px 24px; font-size:12px; color:#64748d; background:#fff; border-top:1px solid #e3e8ee; }
+@media (max-width:560px) {
+  .zone-inner { padding:0 16px; } .zone { padding:28px 0; } .card { padding:18px; }
+  .health-grid, .people-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="header-title" style="font-family:'Noto Sans SC',sans-serif;font-weight:300;letter-spacing:1px;">高管周总结</span>
+      <span class="header-badge"><%= typeof page !== 'undefined' && page === 'current' ? '本周' : '历史' %></span>
+    </div>
+    <div class="header-right">
+      <span class="week-label"><%= locals.report ? report.weekInfo.startDate + ' — ' + report.weekInfo.endDate : '' %></span>
+      <div class="avatar">L</div>
+    </div>
+  </div>
+</header>
+
+<div class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-pill <%= page === 'current' ? 'active' : '' %>" href="/">本周总结</a>
+    <a class="nav-pill" href="#">历史周报</a>
+    <a class="nav-pill" href="#">推送记录</a>
+    <span class="nav-spacer"></span>
+    <span class="nav-icon">⚙️</span>
+  </div>
+</div>

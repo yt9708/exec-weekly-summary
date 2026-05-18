@@ -1,0 +1,33 @@
+<div class="zone zone-decisions">
+  <div class="zone-inner">
+    <div class="section-header">
+      <div class="section-icon">⚡</div>
+      <span class="section-title">我的决策清单</span>
+      <span class="section-sub"><%= report.decisions.actionRequired.length + report.decisions.needsDecision.length %> 项待处理 · <%= report.decisions.infoOnly.length %> 项知会</span>
+    </div>
+    <div class="card" id="decisionList">
+      <%
+        var allDecisions = report.decisions.actionRequired.concat(report.decisions.needsDecision);
+        allDecisions.sort(function(a,b){ return a.urgency - b.urgency; });
+        allDecisions.forEach(function(item){
+      %>
+      <div class="decision-item">
+        <div class="decision-tag <%= item.level %>">
+          <% if(item.level==='action'){%>🆘<% }else if(item.level==='decision'){%>⚡<% }else{%>ℹ️<% } %>
+        </div>
+        <div class="decision-body">
+          <div class="decision-title"><%= item.title %></div>
+          <div class="decision-desc"><%= item.description %></div>
+          <div class="decision-meta">
+            <span class="decision-source"><%= item.source %></span>
+            <a class="decision-link" href="<%= item.link %>">→ 去处理</a>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+      <div class="folded-items" onclick="alert('知会事项展开功能将在下一阶段实现')">
+        + <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开
+      </div>
+    </div>
+  </div>
+</div>

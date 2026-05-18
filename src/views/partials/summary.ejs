@@ -1,0 +1,22 @@
+<div class="zone zone-summary">
+  <div class="zone-inner">
+    <span class="push-badge">✓ 周一 08:30 已推送</span>
+    <div class="section-header">
+      <div class="section-icon">🧠</div>
+      <span class="section-title">本周总览</span>
+      <span class="section-sub">AI 生成 · <%= report.weekInfo.pushedAt.slice(0,10) %></span>
+    </div>
+    <div class="card">
+      <% report.aiSummary.items.forEach(function(item){ %>
+      <div class="summary-item">
+        <span class="summary-dot <%= item.status %>"></span>
+        <div class="summary-text"><%= item.text %></div>
+      </div>
+      <% }) %>
+      <div class="summary-actions">
+        <button class="summary-btn" onclick="alert('AI 重新生成功能将在下一阶段实现')">🔄 重新生成</button>
+        <button class="summary-btn" onclick="alert('已复制')">📋 复制摘要</button>
+      </div>
+    </div>
+  </div>
+</div>
