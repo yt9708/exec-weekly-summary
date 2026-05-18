@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Style · 高管周总结 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+  background: #010102;
+  color: #f7f8f8;
+  font-weight: 400;
+  line-height:1.5;
+}
+
+/* ─── Surface ladder ─── */
+.surface-1 { background:#0f1011; }
+.surface-2 { background:#141516; }
+
+/* ─── Header ─── */
+.header { background:#010102; border-bottom:1px solid #23252a; }
+.header-inner { max-width:800px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+.header-left { display:flex; align-items:center; gap:10px; }
+.header-title { font-size:20px; font-weight:600; letter-spacing:-0.4px; color:#f7f8f8; }
+.header-badge { font-size:11px; padding:2px 8px; background:#141516; color:#d0d6e0; border-radius:9999px; font-weight:500; border:1px solid #23252a; }
+.header-right { display:flex; align-items:center; gap:12px; }
+.week-label { font-size:12px; color:#8a8f98; font-weight:400; }
+.avatar { width:28px; height:28px; border-radius:9999px; background:#5e6ad2; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; }
+
+/* ─── Nav ─── */
+.nav-bar { background:#010102; border-bottom:1px solid #23252a; }
+.nav-inner { max-width:800px; margin:0 auto; padding:10px 24px; display:flex; gap:6px; align-items:center; }
+.nav-item { font-size:13px; font-weight:500; padding:6px 12px; border-radius:8px; color:#8a8f98; text-decoration:none; transition:all 0.15s; letter-spacing:0.4px; }
+.nav-item:hover { background:#0f1011; color:#f7f8f8; }
+.nav-item.active { background:#141516; color:#f7f8f8; border:1px solid #23252a; }
+.nav-spacer { flex:1; }
+.nav-icon { font-size:14px; padding:6px 8px; border-radius:8px; color:#8a8f98; cursor:pointer; }
+.nav-icon:hover { background:#0f1011; color:#f7f8f8; }
+
+/* ─── Zones ─── */
+.zone { padding:36px 0; }
+.zone-inner { max-width:800px; margin:0 auto; padding:0 24px; }
+
+/* ─── Section header ─── */
+.section-header { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+.section-icon { font-size:15px; }
+.section-title { font-size:17px; font-weight:600; letter-spacing:-0.3px; color:#f7f8f8; }
+.section-sub { font-size:12px; color:#62666d; margin-left:auto; font-weight:400; }
+
+/* ─── Card ─── */
+.card { background:#0f1011; border-radius:12px; padding:20px; border:1px solid #23252a; }
+
+/* ─── Module 1 ─── */
+.summary-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; }
+.summary-item+.summary-item { border-top:1px solid #23252a; }
+.summary-dot { width:8px; height:8px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+.summary-dot.green { background:#27a644; } .summary-dot.yellow { background:#eab308; } .summary-dot.red { background:#ef4444; }
+.summary-text { font-size:14px; font-weight:400; line-height:1.6; color:#d0d6e0; }
+.summary-text strong { color:#f7f8f8; font-weight:600; }
+.summary-actions { margin-top:14px; padding-top:14px; border-top:1px solid #23252a; display:flex; gap:8px; }
+.summary-btn { font-size:13px; font-weight:500; padding:6px 12px; border-radius:8px; border:none; background:#141516; color:#d0d6e0; cursor:pointer; font-family:inherit; border:1px solid #23252a; transition:all 0.15s; }
+.summary-btn:hover { background:#5e6ad2; color:#fff; border-color:#5e6ad2; }
+
+/* ─── Module 2 ─── */
+.decision-item { display:flex; gap:12px; align-items:flex-start; padding:12px 0; }
+.decision-item+.decision-item { border-top:1px solid #23252a; }
+.decision-tag { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+.decision-tag.action { background:rgba(239,68,68,0.15); } .decision-tag.decision { background:rgba(234,179,8,0.15); }
+.decision-body { flex:1; min-width:0; }
+.decision-title { font-size:14px; font-weight:500; margin-bottom:2px; color:#f7f8f8; cursor:pointer; }
+.decision-title:hover { color:#828fff; }
+.decision-desc { font-size:13px; font-weight:400; color:#8a8f98; line-height:1.6; }
+.decision-meta { display:flex; gap:8px; align-items:center; margin-top:4px; }
+.decision-source { font-size:11px; padding:2px 8px; border-radius:9999px; background:#141516; color:#62666d; font-weight:500; border:1px solid #23252a; }
+.decision-link { font-size:12px; color:#828fff; text-decoration:none; font-weight:500; }
+.decision-link:hover { text-decoration:underline; }
+.folded-items { text-align:center; padding:10px; font-size:12px; color:#62666d; background:#010102; border-radius:8px; border:1px dashed #23252a; margin-top:8px; cursor:pointer; }
+.folded-items:hover { color:#8a8f98; }
+
+/* ─── Module 3 ─── */
+.sub-section-title { font-size:12px; font-weight:500; color:#62666d; margin-bottom:12px; letter-spacing:0.4px; text-transform:uppercase; }
+.health-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.health-item { background:#141516; border-radius:8px; padding:12px 14px; border:1px solid #23252a; }
+.health-item .label { font-size:11px; color:#62666d; margin-bottom:4px; font-weight:500; }
+.health-item .value { font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px; }
+.dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+.dot.green { background:#27a644; } .dot.yellow { background:#eab308; } .dot.red { background:#ef4444; }
+.event-list { margin-bottom:16px; }
+.event-item { display:flex; gap:10px; align-items:flex-start; padding:8px 0; }
+.event-item+.event-item { border-top:1px solid #23252a; }
+.event-icon { font-size:12px; flex-shrink:0; margin-top:3px; }
+.event-body { font-size:13px; font-weight:400; color:#8a8f98; line-height:1.6; }
+.event-body strong { color:#f7f8f8; font-weight:500; }
+.people-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.people-item { background:#141516; border-radius:8px; padding:10px 12px; border:1px solid #23252a; }
+.people-name { font-size:13px; font-weight:500; }
+.people-detail { font-size:11px; color:#62666d; }
+
+/* ─── Module 4 ─── */
+.warn-item { padding:12px 0; }
+.warn-item+.warn-item { border-top:1px solid #23252a; }
+.warn-title { font-size:14px; font-weight:500; margin-bottom:2px; display:flex; align-items:center; gap:6px; }
+.warn-desc { font-size:13px; font-weight:400; color:#8a8f98; }
+.warn-prep { font-size:11px; color:#eab308; margin-top:4px; }
+
+.push-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:3px 10px; background:rgba(39,166,68,0.12); color:#27a644; border-radius:9999px; font-weight:500; border:1px solid rgba(39,166,68,0.2); margin-bottom:16px; }
+.footer { text-align:center; padding:40px 24px; font-size:12px; color:#62666d; border-top:1px solid #23252a; }
+
+@media (max-width:560px) { .health-grid,.people-grid { grid-template-columns:1fr; } .zone-inner { padding:0 16px; } }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="header-title">高管周总结</span>
+      <span class="header-badge">本周</span>
+    </div>
+    <div class="header-right">
+      <span class="week-label">2026/05/11 — 2026/05/17</span>
+      <div class="avatar">L</div>
+    </div>
+  </div>
+</header>
+
+<div class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-item active" href="#">本周总结</a>
+    <a class="nav-item" href="#">历史周报</a>
+    <a class="nav-item" href="#">推送记录</a>
+    <span class="nav-spacer"></span>
+    <span class="nav-icon">⚙️</span>
+  </div>
+</div>
+
+<!-- Zone 1 -->
+<div class="zone">
+  <div class="zone-inner">
+    <span class="push-badge">✓ 周一 08:30 已推送</span>
+    <div class="section-header">
+      <span class="section-icon">🧠</span>
+      <span class="section-title">本周总览</span>
+      <span class="section-sub">AI 生成</span>
+    </div>
+    <div class="card">
+      <div class="summary-item"><span class="summary-dot green"></span><div class="summary-text"><strong>整体状态良好</strong> — 研发部 Q2 重点项目全部按计划推进，市场部新品发布会筹备进入冲刺阶段。</div></div>
+      <div class="summary-item"><span class="summary-dot yellow"></span><div class="summary-text"><strong>需要关注</strong> — 财务部预算审批积压 6 件（含 2 件跨部门急件）。</div></div>
+      <div class="summary-item"><span class="summary-dot red"></span><div class="summary-text"><strong>下周风险</strong> — 供应链部原材料入库延迟（A-3 供应商产能不足）。</div></div>
+      <div class="summary-actions"><button class="summary-btn">🔄 重新生成</button><button class="summary-btn">📋 复制摘要</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Zone 2 -->
+<div class="zone" style="background:#010102;">
+  <div class="zone-inner">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <span class="section-title">我的决策清单</span>
+      <span class="section-sub">4 项待处理</span>
+    </div>
+    <div class="card">
+      <div class="decision-item">
+        <div class="decision-tag action">🆘</div>
+        <div class="decision-body">
+          <div class="decision-title">审批：Q3 营销预算追加方案</div>
+          <div class="decision-desc">市场部申请追加 80 万用于 618 大促抖音投放，ROI 预期 1:3.5。</div>
+          <div class="decision-meta"><span class="decision-source">合思审批</span><a class="decision-link" href="#">→ 去审批</a></div>
+        </div>
+      </div>
+      <div class="decision-item">
+        <div class="decision-tag decision">⚡</div>
+        <div class="decision-body">
+          <div class="decision-title">协调：数据平台迁移时间冲突</div>
+          <div class="decision-desc">研发部与运维部对 5/20 数据库迁移窗口有分歧。</div>
+          <div class="decision-meta"><span class="decision-source">企微 · 跨部门</span><a class="decision-link" href="#">→ 查看消息</a></div>
+        </div>
+      </div>
+      <div class="folded-items">+ 2 项待处理 · 点击展开</div>
+    </div>
+  </div>
+</div>
+
+<!-- Zone 3 -->
+<div class="zone">
+  <div class="zone-inner">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title">本周动态速览</span>
+    </div>
+    <div class="card">
+      <div class="sub-section-title">业务体检</div>
+      <div class="health-grid">
+        <div class="health-item"><div class="label">研发部 · 重点项目</div><div class="value"><span class="dot green"></span> 92%</div></div>
+        <div class="health-item"><div class="label">市场部 · 新品发布</div><div class="value"><span class="dot yellow"></span> 68%</div></div>
+        <div class="health-item"><div class="label">供应链 · 库存周转</div><div class="value"><span class="dot red"></span> 异常</div></div>
+        <div class="health-item"><div class="label">财务 · 预算执行率</div><div class="value"><span class="dot green"></span> 87%</div></div>
+      </div>
+      <div class="sub-section-title" style="margin-top:16px">团队动态</div>
+      <div class="event-item"><span class="event-icon">📅</span><div class="event-body"><strong>1on1 待覆盖</strong> — 张明远、李雪超过 2 周未进行一对一。</div></div>
+      <div class="people-grid" style="margin-top:8px">
+        <div class="people-item"><div class="people-name">🎂 陈婉婷</div><div class="people-detail">5/18 生日</div></div>
+        <div class="people-item"><div class="people-name">🎉 赵明</div><div class="people-detail">5/20 入职 3 周年</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Zone 4 -->
+<div class="zone" style="background:#010102;">
+  <div class="zone-inner">
+    <div class="section-header">
+      <span class="section-icon">🔭</span>
+      <span class="section-title">下周预警</span>
+    </div>
+    <div class="card">
+      <div class="warn-item"><div class="warn-title"><span style="color:#ef4444;">●</span> 新品发布会物料交付截止</div><div class="warn-desc">宣传册、展架最迟周三定稿。</div><div class="warn-prep">建议本周五前完成终审</div></div>
+      <div class="warn-item"><div class="warn-title"><span style="color:#eab308;">●</span> 月度经营分析会</div><div class="warn-desc">5/20（周三）14:00 · 各部长需准备部门月报。</div><div class="warn-prep">建议周一前下发模板</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">高管周总结 · 每周一早 8:30 推送 · 数据模拟展示</div>
+</body>
+</html>
