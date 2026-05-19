@@ -85,6 +85,14 @@ body {
 .warn-desc { font-size:13px; font-weight:300; color:#64748d; line-height:1.6; }
 .warn-prep { font-size:11px; color:#f59e0b; margin-top:4px; font-feature-settings:"tnum"; }
 .footer { text-align:center; padding:40px 24px; font-size:12px; color:#64748d; background:#fff; border-top:1px solid #e3e8ee; }
+.empty-state { padding:48px 0; text-align:center; }
+.empty-state .icon { font-size:40px; margin-bottom:12px; opacity:0.25; }
+.empty-state .msg { font-size:14px; color:#64748d; font-weight:300; }
+.empty-state .hint { font-size:12px; color:#94a3b8; font-weight:300; margin-top:4px; }
+.loading-spinner { display:inline-block; width:16px; height:16px; border:2px solid #e3e8ee; border-top-color:#533afd; border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+.page-title-sm { font-size:14px; font-weight:400; color:#64748d; margin-bottom:16px; }
 @media (max-width:560px) {
   .zone-inner { padding:0 16px; } .zone { padding:28px 0; } .card { padding:18px; }
   .health-grid, .people-grid { grid-template-columns:1fr; }
@@ -109,9 +117,9 @@ body {
 <div class="nav-bar">
   <div class="nav-inner">
     <a class="nav-pill <%= page === 'current' ? 'active' : '' %>" href="/">本周总结</a>
-    <a class="nav-pill" href="#">历史周报</a>
-    <a class="nav-pill" href="#">推送记录</a>
+    <a class="nav-pill <%= page === 'history' ? 'active' : '' %>" href="/history">历史周报</a>
+    <a class="nav-pill <%= page === 'push-logs' ? 'active' : '' %>" href="/push-logs">推送记录</a>
     <span class="nav-spacer"></span>
-    <span class="nav-icon">⚙️</span>
+    <span class="nav-icon" onclick="window.location.href='/settings'" title="偏好设置">⚙️</span>
   </div>
 </div>

@@ -25,7 +25,23 @@
         </div>
       </div>
       <% }) %>
-      <div class="folded-items" onclick="alert('知会事项展开功能将在下一阶段实现')">
+      <!-- Info items (hidden by default) -->
+      <div id="infoItems" style="display:none;">
+        <% report.decisions.infoOnly.forEach(function(item){ %>
+        <div class="decision-item">
+          <div class="decision-tag info">ℹ️</div>
+          <div class="decision-body">
+            <div class="decision-title"><%= item.title %></div>
+            <div class="decision-desc"><%= item.description %></div>
+            <div class="decision-meta">
+              <span class="decision-source"><%= item.source %></span>
+              <a class="decision-link" href="<%= item.link %>">→ 查看详情</a>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <div class="folded-items" id="toggleInfo" onclick="toggleInfoItems()">
         + <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开
       </div>
     </div>
