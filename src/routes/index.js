@@ -3,6 +3,8 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs');
 const calendarSync = require('../services/calendar-sync-service');
+const screenshotService = require('../services/screenshot-service');
+const BASE_URL = 'http://127.0.0.1:' + (process.env.PORT || 3457);
 
 function loadMockData() {
   const dataPath = path.join(__dirname, '../data/mock-weekly-report.json');
@@ -114,5 +116,39 @@ router.post('/api/report/confirm-and-sync', async (req, res) => {
     });
   }
 });
+
+// 截图页面（精简版，专为 Puppeteer 截图优化）
+router.get('/screenshot', (req, res) => {
+  const data = loadMockData();
+  res.render('screenshot', { report: data });
+});
+
+// API - 生成推送截图
+router.post('/api/screenshot/generate', async (req, res) => {
+  try {
+    const screenshotUrl = BASE_URL + '/screenshot';
+    const filename = 'push-report-' + Date.now() + '.png';
+    const outputPath = await screenshotService.captureReportImage(screenshotUrl, filename);
+
+    res.json({
+      status: 'ok',
+      message: '截图已生成',
+      data: {
+        filename: filename,
+        path: '/snapshots/' + filename,
+        url: '/snapshots/' + filename
+      }
+    });
+  } catch (err) {
+    console.error('[Screenshot Route]', err);
+    res.status(500).json({
+      status: 'error',
+      message: '截图生成失败：' + err.message
+    });
+  }
+});
+
+// 静态文件：提供截图访问
+router.use('/snapshots', express.static(path.join(__dirname, '../snapshots')));
 
 module.exports = router;

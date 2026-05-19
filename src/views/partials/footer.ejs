@@ -91,6 +91,38 @@ function confirmReport() {
     });
 }
 
+// 生成推送截图
+function generateScreenshot() {
+  var btn = event.target;
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '⏳ 截图生成中...';
+  result.style.display = 'none';
+
+  fetch('/api/screenshot/generate', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '🖼️ 截图已生成<br>' +
+        '<span style="font-size:11px;opacity:0.7;">文件名: ' + resp.data.filename + '</span><br>' +
+        '<a href="' + resp.data.url + '" target="_blank" style="color:#533afd;font-size:12px;text-decoration:underline;">查看截图 →</a>';
+      btn.textContent = '🖼️ 重新截图';
+      btn.disabled = false;
+    })
+    .catch(function(err) {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 截图生成失败: ' + (err.message || '请重试');
+      btn.textContent = '🖼️ 生成推送截图';
+      btn.disabled = false;
+    });
+}
+
 // 确认生成并同步到企微日历
 function confirmAndSync() {
   var btn = document.getElementById('confirmSyncBtn');
