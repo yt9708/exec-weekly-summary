@@ -61,6 +61,36 @@ function regenerateSummary() {
     });
 }
 
+// 手动推送至企微
+function pushToWecom() {
+  var btn = event.target;
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '📤 推送中...';
+  result.style.display = 'none';
+
+  fetch('/api/push/now', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '📨 ' + resp.message;
+      btn.textContent = '✓ 已推送';
+      btn.disabled = true;
+    })
+    .catch(function(err) {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 推送失败: ' + (err.message || '请重试');
+      btn.textContent = '📨 手动推送至企微';
+      btn.disabled = false;
+    });
+}
+
 // 确认生成周报
 function confirmReport() {
   var btn = document.getElementById('confirmBtn');

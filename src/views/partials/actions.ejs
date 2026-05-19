@@ -1,21 +1,26 @@
 <div class="zone" style="background:#fff;padding-top:0;">
   <div class="zone-inner">
     <div style="border-top:1px solid #e3e8ee;padding-top:24px;text-align:center;">
-      <div style="margin-bottom:16px;font-size:13px;color:#64748d;font-weight:300;">
+      <div style="margin-bottom:12px;font-size:13px;color:#64748d;font-weight:300;">
         确认后周报将被锁定，不可再修改
       </div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
         <button class="action-btn action-btn-primary" id="confirmBtn" onclick="confirmReport()">
           ✓ 确认生成本周总结
         </button>
         <button class="action-btn action-btn-accent" id="confirmSyncBtn" onclick="confirmAndSync()">
           📅 确认生成并同步至企微日历
         </button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
         <button class="action-btn" style="background:#1e293b;color:#fff;" onclick="generateScreenshot()">
           🖼️ 生成推送截图
         </button>
+        <button class="action-btn" style="background:#0d9488;color:#fff;" onclick="pushToWecom()">
+          📨 手动推送至企微
+        </button>
       </div>
-      <div id="confirmResult" style="display:none;margin-top:16px;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:400;"></div>
+      <div id="confirmResult" style="display:none;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:400;"></div>
     </div>
   </div>
 </div>

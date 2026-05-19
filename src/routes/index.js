@@ -4,6 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const calendarSync = require('../services/calendar-sync-service');
 const screenshotService = require('../services/screenshot-service');
+const wecomService = require('../services/wecom-service');
+const scheduler = require('../services/scheduler');
 const BASE_URL = 'http://127.0.0.1:' + (process.env.PORT || 3457);
 
 function loadMockData() {
@@ -150,5 +152,41 @@ router.post('/api/screenshot/generate', async (req, res) => {
 
 // 静态文件：提供截图访问
 router.use('/snapshots', express.static(path.join(__dirname, '../snapshots')));
+
+// API - 手动推送周报到企微
+router.post('/api/push/now', async (req, res) => {
+  try {
+    // 1. 截图
+    const screenshotUrl = BASE_URL + '/screenshot';
+    const filename = 'push-' + Date.now() + '.png';
+    const imagePath = await screenshotService.captureReportImage(screenshotUrl, filename);
+
+    // 2. 推送
+    const mockUsers = ['leung', 'zhangwei', 'wangfang'];
+    const reportUrl = BASE_URL + '/';
+    const pushResult = await wecomService.pushWeeklyReport(mockUsers, imagePath, reportUrl);
+
+    res.json({
+      status: 'ok',
+      message: `已推送给 ${pushResult.successCount}/${pushResult.total} 人`,
+      data: pushResult
+    });
+  } catch (err) {
+    console.error('[Push Route]', err);
+    res.status(500).json({ status: 'error', message: '推送失败：' + err.message });
+  }
+});
+
+// API - 获取推送目标用户列表
+router.get('/api/push/users', (req, res) => {
+  const users = [
+    { id: 'leung', name: 'Leung', role: 'CEO' },
+    { id: 'zhangwei', name: '张伟', role: '研发部长' },
+    { id: 'wangfang', name: '王芳', role: '市场部长' },
+    { id: 'lichen', name: '李晨', role: '财务部长' },
+    { id: 'zhaoqiang', name: '赵强', role: '供应链部长' }
+  ];
+  res.json({ status: 'ok', data: users });
+});
 
 module.exports = router;
