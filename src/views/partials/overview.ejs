@@ -10,7 +10,7 @@
         <% report.healthCheck.items.forEach(function(item){ %>
         <div class="health-item">
           <div class="label"><%= item.team %> · <%= item.metric %></div>
-          <div class="value"><span class="dot <%= item.status %>"></span> <%= item.value %> · <%= item.detail %></div>
+          <div class="value"><span class="dot <%= item.status %>"></span> <%- boldNums(item.value) %> · <%= item.detail %></div>
         </div>
         <% }) %>
       </div>
@@ -18,7 +18,7 @@
         <% report.events.forEach(function(evt){ %>
         <div class="event-item">
           <span class="event-icon"><% if(evt.status==='red'){%>🔴<%}else{%>🟡<%}%></span>
-          <div class="event-body"><strong><%= evt.title %></strong> — <%= evt.description %></div>
+          <div class="event-body"><strong><%= evt.title %></strong> — <%- boldNums(evt.description) %></div>
         </div>
         <% }) %>
       </div>
@@ -26,7 +26,7 @@
       <div class="event-list">
         <div class="event-item">
           <span class="event-icon">📅</span>
-          <div class="event-body"><strong>1on1 待覆盖</strong> — <%= report.teamUpdates.oneOnOne.members.join('、') %> 超过 2 周未进行一对一，<%= report.teamUpdates.oneOnOne.note %>。</div>
+          <div class="event-body"><strong>1on1 待覆盖</strong> — <%= report.teamUpdates.oneOnOne.members.join('、') %> 超过 <strong class="hl-num">2</strong> 周未进行一对一，<%= report.teamUpdates.oneOnOne.note %>。</div>
         </div>
         <div class="event-item">
           <span class="event-icon">👋</span>

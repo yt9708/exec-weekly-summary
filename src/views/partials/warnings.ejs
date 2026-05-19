@@ -15,7 +15,7 @@
           <%= w.title %>
           <% if(w.syncToCalendar){ %><span style="font-size:10px;padding:2px 6px;background:#eef2ff;color:#4f46e5;border-radius:4px;margin-left:6px;font-weight:400;">📅 <%= w.eventDate %></span><% } %>
         </div>
-        <div class="warn-desc"><%= w.description %></div>
+        <div class="warn-desc"><%- boldNums(w.description) %></div>
         <div class="warn-prep">⏰ <%= w.deadline %></div>
       </div>
       <% }) %>

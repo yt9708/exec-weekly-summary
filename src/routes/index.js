@@ -9,6 +9,21 @@ function loadMockData() {
   return JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
 }
 
+/**
+ * 模板辅助函数：将文本中的数字+单位加粗
+ * 匹配模式：数字（含小数）+ 可选空格 + 单位（万亿件个天周项%小时人元等）
+ */
+function boldNums(text) {
+  if (!text) return '';
+  return text.replace(/(\d+(?:\.\d+)?\s*(?:万|亿|元|件|个|天|周|项|%|小时|人|名))/g, '<strong class="hl-num">$1</strong>');
+}
+
+// 在每次渲染时注入 boldNums 辅助函数
+router.use(function(req, res, next) {
+  res.locals.boldNums = boldNums;
+  next();
+});
+
 // 首页 - 本周周报
 router.get('/', (req, res) => {
   const data = loadMockData();

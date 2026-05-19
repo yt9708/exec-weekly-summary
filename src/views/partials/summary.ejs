@@ -11,7 +11,7 @@
       <% report.aiSummary.items.forEach(function(item){ %>
       <div class="summary-item">
         <span class="summary-dot <%= item.status %>"></span>
-        <div class="summary-text"><%= item.text %></div>
+        <div class="summary-text"><%- boldNums(item.text) %></div>
       </div>
       <% }) %>
       </div>
