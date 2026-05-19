@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const calendarSync = require('../services/calendar-sync-service');
 
 function loadMockData() {
   const dataPath = path.join(__dirname, '../data/mock-weekly-report.json');
@@ -46,7 +47,6 @@ router.get('/api/weekly-report', (req, res) => {
 
 // API - 重新生成 AI 摘要（模拟）
 router.post('/api/report/regenerate', (req, res) => {
-  // 模拟 AI 延迟
   setTimeout(() => {
     const mockReroll = [
       { status: 'green', text: '整体平稳 — 各业务线按预期推进，本周无重大偏离。重点关注下周的供应商合同续签。' },
@@ -55,6 +55,49 @@ router.post('/api/report/regenerate', (req, res) => {
     ];
     res.json({ status: 'ok', data: { items: mockReroll, generatedAt: new Date().toISOString() } });
   }, 800);
+});
+
+// API - 确认生成周报
+router.post('/api/report/confirm', (req, res) => {
+  const data = loadMockData();
+  const syncable = calendarSync.extractSyncableEvents(data);
+  setTimeout(() => {
+    res.json({
+      status: 'ok',
+      message: '本周总结已确认生成',
+      data: {
+        confirmedAt: new Date().toISOString(),
+        weekInfo: data.weekInfo,
+        syncableCount: syncable.length,
+        syncableEvents: syncable
+      }
+    });
+  }, 600);
+});
+
+// API - 确认生成并同步到企微日历
+router.post('/api/report/confirm-and-sync', async (req, res) => {
+  const data = loadMockData();
+  const userId = req.body.userId || 'leung';
+  const syncable = calendarSync.extractSyncableEvents(data);
+
+  try {
+    const syncResult = await calendarSync.syncToWecomCalendar(syncable, userId);
+    res.json({
+      status: 'ok',
+      message: '本周总结已确认生成，日历事项已同步',
+      data: {
+        confirmedAt: new Date().toISOString(),
+        weekInfo: data.weekInfo,
+        syncResult
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: '同步失败：' + err.message
+    });
+  }
 });
 
 module.exports = router;

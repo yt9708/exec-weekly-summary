@@ -129,12 +129,12 @@
       "note": "建议本周安排面谈"
     },
     "personnelChanges": [
-      { "type": "onboard", "name": "赵凯", "role": "品牌经理", "department": "市场部" },
-      { "type": "offboard", "name": "刘洋", "role": "高级工程师", "department": "研发部" }
+      { "type": "onboard", "name": "赵凯", "role": "品牌经理", "department": "市场部", "date": "2026-05-12", "syncToCalendar": true },
+      { "type": "offboard", "name": "刘洋", "role": "高级工程师", "department": "研发部", "date": "2026-05-15" }
     ],
     "importantDates": [
-      { "type": "birthday", "name": "陈婉婷", "date": "05-18", "department": "市场部" },
-      { "type": "anniversary", "name": "赵明", "date": "05-20", "department": "研发部", "years": 3 }
+      { "type": "birthday", "name": "陈婉婷", "date": "05-18", "dateFull": "2026-05-18", "department": "市场部", "syncToCalendar": true },
+      { "type": "anniversary", "name": "赵明", "date": "05-20", "dateFull": "2026-05-20", "department": "研发部", "years": 3, "syncToCalendar": true }
     ]
   },
 
@@ -144,14 +144,20 @@
       "level": "high",
       "title": "新品发布会物料交付截止",
       "description": "宣传册、展架、演示视频最迟周三定稿，目前设计稿仍有 3 处未确认。",
-      "deadline": "建议本周五前完成终审"
+      "deadline": "建议本周五前完成终审",
+      "eventDate": "2026-05-20",
+      "eventTime": "18:00",
+      "syncToCalendar": true
     },
     {
       "id": "wrn-002",
       "level": "medium",
       "title": "月度经营分析会",
       "description": "5/20（周三）14:00 · 各部长需准备部门月报 PPT。",
-      "deadline": "建议周一前下发模板"
+      "deadline": "建议周一前下发模板",
+      "eventDate": "2026-05-20",
+      "eventTime": "14:00",
+      "syncToCalendar": true
     },
     {
       "id": "wrn-003",

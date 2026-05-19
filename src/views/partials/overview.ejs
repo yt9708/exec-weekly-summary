@@ -33,7 +33,11 @@
           <div class="event-body">
             <strong>本周人事</strong> —
             <% report.teamUpdates.personnelChanges.forEach(function(p, idx){ %>
-              <% if(p.type==='onboard'){%>入职：<%= p.department %><%= p.name %>（<%= p.role %>）<%}else{%>离职：<%= p.department %><%= p.name %><%}%>
+              <% if(p.type==='onboard'){%>
+                入职：<%= p.department %><%= p.name %>（<%= p.role %>）· <span style="color:#0d253d;font-weight:400;"><%= p.date %></span>
+              <%}else{%>
+                离职：<%= p.department %><%= p.name %> · <span style="color:#0d253d;font-weight:400;"><%= p.date %></span>
+              <%}%>
               <% if(idx < report.teamUpdates.personnelChanges.length - 1){%>；<%}%>
             <% }) %>
           </div>
@@ -43,7 +47,11 @@
         <% report.teamUpdates.importantDates.forEach(function(d){ %>
         <div class="people-item">
           <div class="people-name"><% if(d.type==='birthday'){%>🎂<%}else{%>🎉<%}%> <%= d.name %></div>
-          <div class="people-detail"><%= d.date %> <% if(d.type==='birthday'){%>生日<%}else{%>入职 <%= d.years %> 周年<%}%> · <%= d.department %></div>
+          <div class="people-detail">
+            <%= d.dateFull %> ·
+            <% if(d.type==='birthday'){%>生日<%}else{%>入职 <%= d.years %> 周年<%}%>
+            · <%= d.department %>
+          </div>
         </div>
         <% }) %>
       </div>

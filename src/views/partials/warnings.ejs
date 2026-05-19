@@ -3,6 +3,9 @@
     <div class="section-header">
       <div class="section-icon">🔭</div>
       <span class="section-title">下周预警</span>
+      <% if(report.warnings.some(function(w){ return w.syncToCalendar; })){ %>
+      <span class="section-sub">可同步至日历</span>
+      <% } %>
     </div>
     <div class="card">
       <% report.warnings.forEach(function(w){ %>
@@ -10,6 +13,7 @@
         <div class="warn-title">
           <% if(w.level==='high'){%><span style="color:#ef4444;">●</span><%}else if(w.level==='medium'){%><span style="color:#f59e0b;">●</span><%}else{%><span style="color:#10b981;">●</span><%}%>
           <%= w.title %>
+          <% if(w.syncToCalendar){ %><span style="font-size:10px;padding:2px 6px;background:#eef2ff;color:#4f46e5;border-radius:4px;margin-left:6px;font-weight:400;">📅 <%= w.eventDate %></span><% } %>
         </div>
         <div class="warn-desc"><%= w.description %></div>
         <div class="warn-prep">⏰ <%= w.deadline %></div>

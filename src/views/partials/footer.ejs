@@ -20,7 +20,8 @@ function copySummary() {
   var text = '';
   items.forEach(function(el) { text += el.textContent.trim() + '\n'; });
   navigator.clipboard.writeText(text.trim()).then(function() {
-    var btn = document.querySelector('.summary-btn:last-child');
+    var btns = document.querySelectorAll('.summary-btn');
+    var btn = btns[btns.length - 1];
     var orig = btn.textContent;
     btn.textContent = '✓ 已复制';
     setTimeout(function() { btn.textContent = orig; }, 1500);
@@ -46,11 +47,8 @@ function regenerateSummary() {
       if (resp.status !== 'ok') throw new Error('生成失败');
       container.innerHTML = '';
       resp.data.items.forEach(function(item) {
-        var dotClass = item.status;
         container.innerHTML +=
-          '<div class="summary-item">' +
-          '<span class="summary-dot ' + dotClass + '"></span>' +
-          '<div class="summary-text">' + item.text + '</div></div>';
+          '<div class="summary-item"><span class="summary-dot ' + item.status + '"></span><div class="summary-text">' + item.text + '</div></div>';
       });
       document.getElementById('generateTime').textContent = new Date().toISOString().slice(0,10);
       label.textContent = '重新生成';
@@ -59,6 +57,71 @@ function regenerateSummary() {
     .catch(function() {
       errBox.style.display = 'block';
       label.textContent = '重新生成';
+      btn.disabled = false;
+    });
+}
+
+// 确认生成周报
+function confirmReport() {
+  var btn = document.getElementById('confirmBtn');
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '⏳ 处理中...';
+  result.style.display = 'none';
+
+  fetch('/api/report/confirm', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '✓ ' + resp.message + '<br><span style="font-size:11px;opacity:0.7;">包含 ' + resp.data.syncableCount + ' 个可同步日历事项</span>';
+      btn.textContent = '✓ 已确认';
+      btn.disabled = true;
+    })
+    .catch(function() {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 确认失败，请重试';
+      btn.textContent = '✓ 确认生成本周总结';
+      btn.disabled = false;
+    });
+}
+
+// 确认生成并同步到企微日历
+function confirmAndSync() {
+  var btn = document.getElementById('confirmSyncBtn');
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '⏳ 同步中...';
+  result.style.display = 'none';
+
+  fetch('/api/report/confirm-and-sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: 'leung' })
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '✓ ' + resp.message + '<br><span style="font-size:11px;opacity:0.7;">成功同步 ' + resp.data.syncResult.synced + ' 个事项到企微日历</span>';
+      btn.textContent = '✓ 已同步';
+      btn.disabled = true;
+      document.getElementById('confirmBtn').disabled = true;
+    })
+    .catch(function() {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 同步失败，请重试';
+      btn.textContent = '📅 确认生成并同步至企微日历';
       btn.disabled = false;
     });
 }
