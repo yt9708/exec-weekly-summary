@@ -6,6 +6,7 @@ const calendarSync = require('../services/calendar-sync-service');
 const screenshotService = require('../services/screenshot-service');
 const wecomService = require('../services/wecom-service');
 const scheduler = require('../services/scheduler');
+const aiService = require('../services/ai-service');
 const BASE_URL = 'http://127.0.0.1:' + (process.env.PORT || 3457);
 
 function loadMockData() {
@@ -64,16 +65,19 @@ router.get('/api/weekly-report', (req, res) => {
   res.json({ status: 'ok', data });
 });
 
-// API - 重新生成 AI 摘要（模拟）
-router.post('/api/report/regenerate', (req, res) => {
-  setTimeout(() => {
-    const mockReroll = [
-      { status: 'green', text: '整体平稳 — 各业务线按预期推进，本周无重大偏离。重点关注下周的供应商合同续签。' },
-      { status: 'yellow', text: '需跟进 — 市场部新品发布物料仍有 3 项未确认，已发催办通知，请关注今天反馈。' },
-      { status: 'red', text: '预警 — 研发部数据库迁移方案因安全审查延迟，建议周三前召开专题会敲定折中方案。' }
-    ];
-    res.json({ status: 'ok', data: { items: mockReroll, generatedAt: new Date().toISOString() } });
-  }, 800);
+// API - 重新生成 AI 摘要
+router.post('/api/report/regenerate', async (req, res) => {
+  try {
+    const data = loadMockData();
+    const items = await aiService.generateSummary(data);
+    res.json({
+      status: 'ok',
+      data: { items, generatedAt: new Date().toISOString() }
+    });
+  } catch (err) {
+    console.error('[Regenerate]', err);
+    res.status(500).json({ status: 'error', message: '生成失败：' + err.message });
+  }
 });
 
 // API - 确认生成周报

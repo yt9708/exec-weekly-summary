@@ -5,6 +5,7 @@ const indexRouter = require('./routes/index');
 const scheduler = require('./services/scheduler');
 const screenshotService = require('./services/screenshot-service');
 const wecomService = require('./services/wecom-service');
+const aiService = require('./services/ai-service');
 
 const app = express();
 const PORT = process.env.PORT || 3456;
@@ -29,7 +30,17 @@ scheduler.registerPushPipeline(async () => {
 
   const BASE_URL = 'http://127.0.0.1:' + PORT;
 
-  // 1. 截图
+  // 1. 重新生成 AI 摘要
+  const dataPath = path.join(__dirname, 'data/mock-weekly-report.json');
+  const fs = require('fs');
+  const data = fs.existsSync(dataPath) ? JSON.parse(fs.readFileSync(dataPath, 'utf-8')) : {};
+  if (data.aiSummary) {
+    const summary = await aiService.generateSummary(data);
+    data.aiSummary.items = summary;
+    data.aiSummary.generatedAt = new Date().toISOString();
+  }
+
+  // 2. 截图
   const screenshotUrl = BASE_URL + '/screenshot';
   const filename = 'auto-push-' + Date.now() + '.png';
   const imagePath = await screenshotService.captureReportImage(screenshotUrl, filename);
