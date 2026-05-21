@@ -4,7 +4,7 @@
     <div class="section-header">
       <div class="section-icon">⚙️</div>
       <span class="section-title">数据管理</span>
-      <span class="section-sub">增删改周报事项</span>
+      <span class="section-sub">增删改 · 全部四模块</span>
     </div>
 
     <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
@@ -16,14 +16,15 @@
 
     <!-- 决策事项 -->
     <div class="card" style="margin-bottom:16px;">
-      <div class="sub-section-title">📋 决策清单（<span id="decCount"><%= report.decisions.actionRequired.length + report.decisions.needsDecision.length %></span> 项）</div>
+      <div class="sub-section-title">📋 决策清单（<span id="decCount"><%= report.decisions.actionRequired.length + report.decisions.needsDecision.length %></span> 项待处理 · <%= report.decisions.infoOnly.length %> 项知会）</div>
       <div id="decisionList">
+        <!-- 需处理事项 -->
         <% 
-          var all = report.decisions.actionRequired.concat(report.decisions.needsDecision).concat(report.decisions.infoOnly);
-          all.forEach(function(item){ 
+          var urgentItems = report.decisions.actionRequired.concat(report.decisions.needsDecision);
+          urgentItems.forEach(function(item){ 
         %>
         <div class="decision-item" data-id="<%= item.id %>">
-          <div class="decision-tag <%= item.level %>"><% if(item.level==='action'){%>🆘<%}else if(item.level==='decision'){%>⚡<%}else{%>ℹ️<%}%></div>
+          <div class="decision-tag <%= item.level %>"><% if(item.level==='action'){%>🆘<%}else{%>⚡<%}%></div>
           <div class="decision-body">
             <div class="decision-title"><%= item.title %></div>
             <div class="decision-desc"><%= item.description %></div>
@@ -39,6 +40,27 @@
           </div>
         </div>
         <% }) %>
+        <!-- 知会事项（默认折叠） -->
+        <div id="mgmtInfoItems" style="display:none;">
+        <% report.decisions.infoOnly.forEach(function(item){ %>
+        <div class="decision-item" data-id="<%= item.id %>">
+          <div class="decision-tag info">ℹ️</div>
+          <div class="decision-body">
+            <div class="decision-title"><%= item.title %></div>
+            <div class="decision-desc"><%= item.description %></div>
+            <div class="decision-meta">
+              <span class="decision-source"><%= item.source %></span>
+              <span style="font-size:11px;color:#94a3b8;">#<%= item.id %></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editDecision('<%= item.id %>')">✏️</button>
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deleteDecision('<%= item.id %>')">🗑️</button>
+          </div>
+        </div>
+        <% }) %>
+        </div>
+        <div class="folded-items" onclick="toggleMgmtInfo()" style="margin-top:4px;">+ <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开</div>
       </div>
     </div>
 
@@ -125,6 +147,19 @@
 </div>
 
 <script>
+// 知会事项展开/折叠（管理页）
+function toggleMgmtInfo() {
+  var el = document.getElementById('mgmtInfoItems');
+  var btn = event.target;
+  if (el.style.display === 'none' || el.style.display === '') {
+    el.style.display = 'block';
+    btn.textContent = '− 收起知会事项';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = '+ <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开';
+  }
+}
+
 function toast(msg, type) {
   var el = document.getElementById('toast');
   el.textContent = msg;
