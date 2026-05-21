@@ -132,6 +132,6 @@ body {
     <a class="nav-pill <%= page === 'history' ? 'active' : '' %>" href="/history">历史周报</a>
     <a class="nav-pill <%= page === 'push-logs' ? 'active' : '' %>" href="/push-logs">推送记录</a>
     <span class="nav-spacer"></span>
-    <span class="nav-icon" onclick="window.location.href='/settings'" title="偏好设置">⚙️</span>
+    <a class="nav-pill <%= page === 'manage' ? 'active' : '' %>" href="/manage" style="font-size:12px;">⚙️ 管理</a>
   </div>
 </div>

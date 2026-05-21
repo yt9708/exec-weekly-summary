@@ -1,18 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const fs = require('fs');
 const calendarSync = require('../services/calendar-sync-service');
 const screenshotService = require('../services/screenshot-service');
 const wecomService = require('../services/wecom-service');
 const scheduler = require('../services/scheduler');
 const aiService = require('../services/ai-service');
+const store = require('../services/data-store');
 const BASE_URL = 'http://127.0.0.1:' + (process.env.PORT || 3457);
-
-function loadMockData() {
-  const dataPath = path.join(__dirname, '../data/mock-weekly-report.json');
-  return JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-}
 
 /**
  * 模板辅助函数：将文本中的数字+单位加粗
@@ -31,44 +26,40 @@ router.use(function(req, res, next) {
 
 // 首页 - 本周周报
 router.get('/', (req, res) => {
-  const data = loadMockData();
   res.render('index', {
     title: '本周总结',
     page: 'current',
-    report: data
+    report: store.getReport()
   });
 });
 
 // 历史周报
 router.get('/history', (req, res) => {
-  const data = loadMockData();
   res.render('history', {
     title: '历史周报',
     page: 'history',
-    report: data
+    report: store.getReport()
   });
 });
 
 // 推送记录
 router.get('/push-logs', (req, res) => {
-  const data = loadMockData();
   res.render('push-logs', {
     title: '推送记录',
     page: 'push-logs',
-    report: data
+    report: store.getReport()
   });
 });
 
 // API - 获取完整周报数据
 router.get('/api/weekly-report', (req, res) => {
-  const data = loadMockData();
-  res.json({ status: 'ok', data });
+  res.json({ status: 'ok', data: store.getReport() });
 });
 
 // API - 重新生成 AI 摘要
 router.post('/api/report/regenerate', async (req, res) => {
   try {
-    const data = loadMockData();
+    const data = store.getReport();
     const items = await aiService.generateSummary(data);
     res.json({
       status: 'ok',
@@ -82,7 +73,7 @@ router.post('/api/report/regenerate', async (req, res) => {
 
 // API - 确认生成周报
 router.post('/api/report/confirm', (req, res) => {
-  const data = loadMockData();
+  const data = store.getReport();
   const syncable = calendarSync.extractSyncableEvents(data);
   setTimeout(() => {
     res.json({
@@ -100,7 +91,7 @@ router.post('/api/report/confirm', (req, res) => {
 
 // API - 确认生成并同步到企微日历
 router.post('/api/report/confirm-and-sync', async (req, res) => {
-  const data = loadMockData();
+  const data = store.getReport();
   const userId = req.body.userId || 'leung';
   const syncable = calendarSync.extractSyncableEvents(data);
 
@@ -125,8 +116,7 @@ router.post('/api/report/confirm-and-sync', async (req, res) => {
 
 // 截图页面（精简版，专为 Puppeteer 截图优化）
 router.get('/screenshot', (req, res) => {
-  const data = loadMockData();
-  res.render('screenshot', { report: data });
+  res.render('screenshot', { report: store.getReport() });
 });
 
 // API - 生成推送截图
@@ -160,7 +150,11 @@ router.use('/snapshots', express.static(path.join(__dirname, '../snapshots')));
 // API - 手动推送周报到企微
 router.post('/api/push/now', async (req, res) => {
   try {
-    // 1. 截图
+    // 1. 刷新 AI 摘要
+    const items = await aiService.generateSummary(store.getReport());
+    store.getReport().aiSummary.items = items;
+
+    // 2. 截图
     const screenshotUrl = BASE_URL + '/screenshot';
     const filename = 'push-' + Date.now() + '.png';
     const imagePath = await screenshotService.captureReportImage(screenshotUrl, filename);

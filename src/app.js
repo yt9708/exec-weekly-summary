@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/', indexRouter);
+app.use('/manage', require('./routes/manage'));
 
 // 注册定时推送流水线
 scheduler.registerPushPipeline(async () => {
