@@ -62,8 +62,8 @@ function regenerateSummary() {
 }
 
 // 手动推送至企微
-function pushToWecom() {
-  var btn = event.target;
+function pushToWecom(el) {
+  var btn = el;
   var result = document.getElementById('confirmResult');
   btn.disabled = true;
   btn.textContent = '📤 推送中...';
@@ -122,8 +122,8 @@ function confirmReport() {
 }
 
 // 生成推送截图
-function generateScreenshot() {
-  var btn = event.target;
+function generateScreenshot(el) {
+  var btn = el;
   var result = document.getElementById('confirmResult');
   btn.disabled = true;
   btn.textContent = '⏳ 截图生成中...';

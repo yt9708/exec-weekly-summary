@@ -31,6 +31,10 @@ logs/
 *.log
 npm-debug.log*
 
+# Generated screenshots
+src/snapshots/
+*.png
+
 # tmp
 tmp/
 temp/
