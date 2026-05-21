@@ -77,6 +77,24 @@ router.put('/api/health/:index', (req, res) => {
   res.json({ status: 'ok', data: updated });
 });
 
+// ─── 团队动态 - 人事变动 ───
+router.post('/api/personnel', (req, res) => {
+  const item = store.addPersonnelChange(req.body);
+  res.json({ status: 'ok', data: item });
+});
+
+router.delete('/api/personnel/:index', (req, res) => {
+  const ok = store.deletePersonnelChange(parseInt(req.params.index));
+  res.json({ status: ok ? 'ok' : 'error', message: ok ? '已删除' : '未找到' });
+});
+
+// ─── 团队动态 - 重要日期 ───
+router.post('/api/dates', (req, res) => {
+  const updates = store.getTeamUpdates();
+  updates.importantDates.push(req.body);
+  res.json({ status: 'ok', data: req.body });
+});
+
 // ─── 重置数据 ───
 router.post('/api/reset', (req, res) => {
   store._loadMockData();

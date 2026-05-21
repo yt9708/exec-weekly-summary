@@ -80,6 +80,45 @@
       <% }) %>
     </div>
 
+    <!-- 业务体检 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">📊 业务体检区<button style="float:right;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editHealth()">编辑</button></div>
+      <div class="health-grid" id="healthGrid">
+        <% report.healthCheck.items.forEach(function(h, idx){ %>
+        <div class="health-item" data-hidx="<%= idx %>">
+          <div class="label"><%= h.team %> · <%= h.metric %></div>
+          <div class="value"><span class="dot <%= h.status %>"></span> <%- boldNums(h.value) %> · <%= h.detail %></div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- 团队动态 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">👥 团队动态</div>
+      <div style="margin-bottom:10px;">
+        <strong style="font-size:13px;font-weight:400;">人事变动</strong>
+        <button style="float:right;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="addPersonnel()">+ 新增</button>
+        <% report.teamUpdates.personnelChanges.forEach(function(p, idx){ %>
+        <div class="event-item">
+          <span class="event-icon"><% if(p.type==='onboard'){%>👋<%}else{%>🚪<%}%></span>
+          <div class="event-body" style="flex:1;"><%= p.type==='onboard'?'入职':'离职' %> · <%= p.name %> · <%= p.department %><%= p.role?'（'+p.role+'）':'' %> · <%= p.date||'待确认' %></div>
+          <button style="font-size:11px;padding:2px 6px;border-radius:4px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deletePersonnel(<%= idx %>)">✕</button>
+        </div>
+        <% }) %>
+      </div>
+      <div>
+        <strong style="font-size:13px;font-weight:400;">重要日期</strong>
+        <button style="float:right;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="addDate()">+ 新增</button>
+        <% report.teamUpdates.importantDates.forEach(function(d){ %>
+        <div class="event-item">
+          <span class="event-icon"><% if(d.type==='birthday'){%>🎂<%}else{%>🎉<%}%></span>
+          <div class="event-body" style="flex:1;"><%= d.name %> · <%= d.dateFull||d.date %> · <%= d.type==='birthday'?'生日':'入职'+d.years+'周年' %> · <%= d.department %></div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:400;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
   </div>
@@ -167,6 +206,44 @@ function showAdd(type) {
     fetch('/manage/api/warnings', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:title, description:desc, level:level||'medium', deadline:deadline||'建议尽快处理'}) })
       .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
   }
+}
+
+// 编辑业务体检
+function editHealth() {
+  var idx = prompt('编辑第几个(0-3):', '0');
+  if(idx===''||idx===null) return;
+  var team = prompt('部门:');
+  var metric = prompt('指标:');
+  var value = prompt('数值:');
+  var status = prompt('状态(green/yellow/red):','green');
+  var detail = prompt('详情:');
+  fetch('/manage/api/health/'+idx, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({team:team, metric:metric, value:value, status:status||'green', detail:detail}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } });
+}
+
+// 新增人事变动
+function addPersonnel() {
+  var type = prompt('类型 (onboard/offboard):','onboard');
+  var name = prompt('姓名:'); if(!name) return;
+  var dept = prompt('部门:');
+  var role = prompt('职位:');
+  fetch('/manage/api/personnel', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({type:type||'onboard', name:name, department:dept||'', role:role||''}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+}
+
+// 删除人事变动
+function deletePersonnel(idx) {
+  if(!confirm('确认删除？')) return;
+  fetch('/manage/api/personnel/'+idx, { method:'DELETE' }).then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+}
+
+// 新增重要日期
+function addDate() {
+  var type = prompt('类型 (birthday/anniversary):','birthday');
+  var name = prompt('姓名:'); if(!name) return;
+  var date = prompt('日期 (MM-DD):');
+  fetch('/manage/api/dates', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({type:type||'birthday', name:name, date:date||'01-01', dateFull:'2026-'+date, department:''}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
 }
 
 // 重置
