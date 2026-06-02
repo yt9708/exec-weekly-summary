@@ -84,13 +84,16 @@ body {
 <header class="admin-header">
   <div class="admin-header-inner">
     <span class="admin-logo">高管周总结 · 管理后台</span>
-    <a class="admin-link" href="/">← 返回主页</a>
+    <a class="admin-link" href="/?mode=admin">概览</a>
   </div>
 </header>
 
 <div class="nav-bar">
   <div class="nav-inner">
-    <a class="nav-pill <%= page === 'admin' ? 'active' : '' %>" href="/admin">概览</a>
-    <a class="nav-pill <%= page === 'admin-data' ? 'active' : '' %>" href="/admin/data">数据管理</a>
+    <a class="nav-pill" href="/">👤 前台</a>
+    <a class="nav-pill <%= page === 'admin' ? 'active' : '' %>" href="/?mode=admin">概览</a>
+    <a class="nav-pill <%= page === 'admin-data' ? 'active' : '' %>" href="/?mode=admin&view=data">数据管理</a>
+    <span class="nav-spacer"></span>
+    <span style="font-size:11px;color:#64748b;padding:4px 10px;border:1px solid #1e293b;border-radius:9999px;">🔧 后台模式</span>
   </div>
 </div>

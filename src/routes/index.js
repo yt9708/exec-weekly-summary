@@ -32,8 +32,36 @@ router.use(function(req, res, next) {
   next();
 });
 
-// 首页 - 本周周报
+// 读取后台数据（共享）
+function getAdminData() {
+  try {
+    const dataPath = path.join(__dirname, '../data/admin-mock.json');
+    return JSON.parse(require('fs').readFileSync(dataPath, 'utf-8'));
+  } catch(e) { return {}; }
+}
+
+// 首页 - 模式切换
 router.get('/', (req, res) => {
+  const isAdmin = req.query.mode === 'admin';
+  const view = req.query.view;
+
+  if (isAdmin) {
+    const adminData = getAdminData();
+    if (view === 'data') {
+      return res.render('admin-data', {
+        title: '管理后台 · 数据管理',
+        page: 'admin-data',
+        admin: adminData
+      });
+    }
+    return res.render('admin', {
+      title: '管理后台 · 概览',
+      page: 'admin',
+      admin: adminData
+    });
+  }
+
+  // 用户视图
   res.render('index', {
     title: '本周总结',
     page: 'current',
