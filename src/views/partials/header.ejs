@@ -117,7 +117,7 @@ body {
   <div class="header-inner">
     <div class="header-left">
       <span class="header-title" style="font-family:'Noto Sans SC',sans-serif;font-weight:300;letter-spacing:1px;">高管周总结</span>
-      <span class="header-badge"><%= typeof page !== 'undefined' && page === 'current' ? '本周' : '历史' %></span>
+      <span class="header-badge"><%= page === 'current' ? '本周' : page === 'history' ? '历史' : '管理' %></span>
     </div>
     <div class="header-right">
       <span class="week-label"><%= locals.report ? report.weekInfo.startDate + ' — ' + report.weekInfo.endDate : '' %></span>
@@ -131,6 +131,7 @@ body {
     <a class="nav-pill <%= page === 'current' ? 'active' : '' %>" href="/">本周总结</a>
     <a class="nav-pill <%= page === 'history' ? 'active' : '' %>" href="/history">历史周报</a>
     <a class="nav-pill <%= page === 'push-logs' ? 'active' : '' %>" href="/push-logs">推送记录</a>
+    <a class="nav-pill <%= page === 'datasource' ? 'active' : '' %>" href="/datasource">数据源</a>
     <span class="nav-spacer"></span>
     <a class="nav-pill <%= page === 'manage' ? 'active' : '' %>" href="/manage" style="font-size:12px;">⚙️ 管理</a>
   </div>
