@@ -30,6 +30,9 @@ app.use('/datasource', require('./routes/datasource'));
 app.get('/admin', (req, res) => {
   res.render('admin', { title: '管理后台', page: 'admin' });
 });
+app.get('/admin/data', (req, res) => {
+  res.render('admin-data', { title: '数据管理', page: 'admin-data' });
+});
 
 // 注册定时推送流水线
 scheduler.registerPushPipeline(async () => {
