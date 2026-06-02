@@ -1,16 +1,18 @@
 <div class="footer">高管周总结 · 每周一早 8:30 自动推送 · 数据模拟展示</div>
 
+<% var infoCount = (typeof report !== 'undefined' && report.decisions) ? report.decisions.infoOnly.length : 0; %>
 <script>
 // 知会事项展开/折叠
 function toggleInfoItems() {
   var el = document.getElementById('infoItems');
   var btn = document.getElementById('toggleInfo');
+  if(!el || !btn) return;
   if (el.style.display === 'none' || el.style.display === '') {
     el.style.display = 'block';
     btn.textContent = '− 收起知会事项';
   } else {
     el.style.display = 'none';
-    btn.textContent = '+ <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开';
+    btn.textContent = '+ <%= infoCount %> 项知会即可 · 点击展开';
   }
 }
 
