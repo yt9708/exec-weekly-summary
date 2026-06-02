@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+let puppeteer;
+try { puppeteer = require('puppeteer'); } catch(e) { puppeteer = null; }
 const path = require('path');
 const fs = require('fs');
 
@@ -17,6 +18,7 @@ class ScreenshotService {
    * 获取或启动浏览器实例
    */
   async getBrowser() {
+    if (!puppeteer) throw new Error('Puppeteer 未安装，截图功能不可用');
     if (!this.browser || !this.browser.isConnected()) {
       this.browser = await puppeteer.launch({
         headless: true,
