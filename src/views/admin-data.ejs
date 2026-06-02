@@ -23,109 +23,55 @@
           </tr>
         </thead>
         <tbody>
+          <% admin.pushLogs.forEach(function(log){ %>
           <tr style="border-bottom:1px solid #e3e8ee;">
-            <td style="padding:10px 12px;font-weight:600;">W20（本周）</td>
-            <td style="padding:10px 12px;">10</td>
-            <td style="padding:10px 12px;color:#16a34a;">10</td>
-            <td style="padding:10px 12px;color:#dc2626;">0</td>
-            <td style="padding:10px 12px;color:#94a3b8;">0</td>
-            <td style="padding:10px 12px;font-weight:600;color:#16a34a;">100%</td>
+            <td style="padding:10px 12px;font-weight:600;"><%= log.week %></td>
+            <td style="padding:10px 12px;"><%= log.total %></td>
+            <td style="padding:10px 12px;color:#16a34a;"><%= log.success %></td>
+            <td style="padding:10px 12px;color:#dc2626;"><%= log.failed %></td>
+            <td style="padding:10px 12px;color:#94a3b8;"><%= log.unpushed %></td>
+            <td style="padding:10px 12px;font-weight:600;color:<%= log.rate === '100%' ? '#16a34a' : '#eab308' %>;"><%= log.rate %></td>
           </tr>
-          <tr style="border-bottom:1px solid #e3e8ee;">
-            <td style="padding:10px 12px;font-weight:600;">W19</td>
-            <td style="padding:10px 12px;">10</td>
-            <td style="padding:10px 12px;color:#16a34a;">10</td>
-            <td style="padding:10px 12px;color:#dc2626;">0</td>
-            <td style="padding:10px 12px;color:#94a3b8;">0</td>
-            <td style="padding:10px 12px;font-weight:600;color:#16a34a;">100%</td>
-          </tr>
-          <tr style="border-bottom:1px solid #e3e8ee;">
-            <td style="padding:10px 12px;font-weight:600;">W18</td>
-            <td style="padding:10px 12px;">10</td>
-            <td style="padding:10px 12px;color:#16a34a;">8</td>
-            <td style="padding:10px 12px;color:#dc2626;">2</td>
-            <td style="padding:10px 12px;color:#94a3b8;">0</td>
-            <td style="padding:10px 12px;font-weight:600;color:#eab308;">80%</td>
-          </tr>
-          <tr>
-            <td style="padding:10px 12px;font-weight:600;">W17</td>
-            <td style="padding:10px 12px;">10</td>
-            <td style="padding:10px 12px;color:#16a34a;">9</td>
-            <td style="padding:10px 12px;color:#dc2626;">0</td>
-            <td style="padding:10px 12px;color:#94a3b8;">1</td>
-            <td style="padding:10px 12px;font-weight:600;color:#eab308;">90%</td>
-          </tr>
+          <% }) %>
         </tbody>
       </table>
       </div>
     </div>
 
-    <!-- 本周详情 -->
+    <!-- 本周推送详情 -->
     <div class="card" style="margin-bottom:16px;">
-      <div class="sub-section-title">📋 W20 推送详情 — 2026/05/11 — 05/17</div>
+      <div class="sub-section-title">📋 W20 推送详情</div>
+      <% admin.currentWeekDetail.forEach(function(d){ %>
       <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#d1fae5;color:#065f46;border-radius:9999px;font-weight:600;">成功</span>
-        <div style="flex:1;font-size:13px;">Leung (CEO)</div>
-        <span style="font-size:12px;color:#94a3b8;">05/12 08:30 · 已读</span>
+        <span style="font-size:11px;padding:3px 10px;background:<%= d.status === 'success' ? '#d1fae5' : d.status === 'failed' ? '#fef2f2' : '#f1f5f9' %>;color:<%= d.status === 'success' ? '#065f46' : d.status === 'failed' ? '#dc2626' : '#64748b' %>;border-radius:9999px;font-weight:600;">
+          <%= d.status === 'success' ? '成功' : d.status === 'failed' ? '失败' : '未推送' %>
+        </span>
+        <div style="flex:1;font-size:13px;"><%= d.name %></div>
+        <span style="font-size:12px;color:<%= d.status === 'failed' ? '#dc2626' : '#94a3b8' %>;"><%= d.time %> · <%= d.note %></span>
       </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#d1fae5;color:#065f46;border-radius:9999px;font-weight:600;">成功</span>
-        <div style="flex:1;font-size:13px;">张伟 (研发部长)</div>
-        <span style="font-size:12px;color:#94a3b8;">05/12 08:30 · 已读</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#d1fae5;color:#065f46;border-radius:9999px;font-weight:600;">成功</span>
-        <div style="flex:1;font-size:13px;">王芳 (市场部长)</div>
-        <span style="font-size:12px;color:#94a3b8;">05/12 08:31 · 已读</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#fef2f2;color:#dc2626;border-radius:9999px;font-weight:600;">失败</span>
-        <div style="flex:1;font-size:13px;">李晨 (财务部长)</div>
-        <span style="font-size:12px;color:#dc2626;">05/12 08:32 · token过期</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;">
-        <span style="font-size:11px;padding:3px 10px;background:#f1f5f9;color:#64748b;border-radius:9999px;font-weight:600;">未推送</span>
-        <div style="flex:1;font-size:13px;">赵强 (供应链部长)</div>
-        <span style="font-size:12px;color:#94a3b8;">休假中 · 自动跳过</span>
-      </div>
+      <% }) %>
     </div>
 
     <!-- 运行数据 -->
     <div class="card" style="margin-bottom:16px;">
       <div class="sub-section-title">🔧 运行数据 — 近 7 天</div>
       <div class="health-grid">
-        <div class="health-item"><div class="label">API 调用总量</div><div class="value">1,247 次</div></div>
-        <div class="health-item"><div class="label">平均响应时间</div><div class="value">186 ms</div></div>
-        <div class="health-item"><div class="label">错误率</div><div class="value"><span class="dot green"></span> 0.3%</div></div>
-        <div class="health-item"><div class="label">截图生成量</div><div class="value">8 张</div></div>
-        <div class="health-item"><div class="label">AI 调用次数</div><div class="value">12 次</div></div>
-        <div class="health-item"><div class="label">数据变更次数</div><div class="value">47 次</div></div>
+        <% admin.runStats.forEach(function(s){ %>
+        <div class="health-item"><div class="label"><%= s.label %></div><div class="value"><% if(s.status){ %><span class="dot <%= s.status %>"></span> <% } %><%= s.value %></div></div>
+        <% }) %>
       </div>
     </div>
 
     <!-- 操作日志 -->
-    <div class="card" style="margin-bottom:16px;">
+    <div class="card">
       <div class="sub-section-title">📝 操作日志 — 今日</div>
+      <% admin.operationLogs.forEach(function(log){ %>
       <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:2px 8px;background:#eff6ff;color:#2563eb;border-radius:4px;font-weight:600;">变更</span>
-        <div style="flex:1;font-size:13px;">新增决策事项：审核Q3预算</div>
-        <span style="font-size:12px;color:#94a3b8;">14:32 · leung</span>
+        <span style="font-size:11px;padding:2px 8px;background:<%= log.type === '变更' ? '#eff6ff' : log.type === '编辑' ? '#fefce8' : log.type === '删除' ? '#fef2f2' : '#f1f5f9' %>;color:<%= log.type === '变更' ? '#2563eb' : log.type === '编辑' ? '#a16207' : log.type === '删除' ? '#dc2626' : '#64748b' %>;border-radius:4px;font-weight:600;"><%= log.type %></span>
+        <div style="flex:1;font-size:13px;"><%= log.action %></div>
+        <span style="font-size:12px;color:#94a3b8;"><%= log.time %> · <%= log.user %></span>
       </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:2px 8px;background:#fefce8;color:#a16207;border-radius:4px;font-weight:600;">编辑</span>
-        <div style="flex:1;font-size:13px;">修改预警：发布会物料截止日</div>
-        <span style="font-size:12px;color:#94a3b8;">15:01 · leung</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:2px 8px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:600;">删除</span>
-        <div style="flex:1;font-size:13px;">删除过期决策事项</div>
-        <span style="font-size:12px;color:#94a3b8;">16:05 · leung</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;">
-        <span style="font-size:11px;padding:2px 8px;background:#f1f5f9;color:#64748b;border-radius:4px;font-weight:600;">系统</span>
-        <div style="flex:1;font-size:13px;">定时推送流水线执行完成</div>
-        <span style="font-size:12px;color:#94a3b8;">08:30 · scheduler</span>
-      </div>
+      <% }) %>
     </div>
   </div>
 </div>

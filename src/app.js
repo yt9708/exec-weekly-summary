@@ -27,11 +27,14 @@ app.use('/manage', require('./routes/manage'));
 app.use('/datasource', require('./routes/datasource'));
 
 // 管理后台（运维入口，不在用户导航栏）
+function getAdminData() {
+  return JSON.parse(require('fs').readFileSync(require('path').join(__dirname, 'data/admin-mock.json'), 'utf-8'));
+}
 app.get('/admin', (req, res) => {
-  res.render('admin', { title: '管理后台', page: 'admin' });
+  res.render('admin', { title: '管理后台', page: 'admin', admin: getAdminData() });
 });
 app.get('/admin/data', (req, res) => {
-  res.render('admin-data', { title: '数据管理', page: 'admin-data' });
+  res.render('admin-data', { title: '数据管理', page: 'admin-data', admin: getAdminData() });
 });
 
 // 注册定时推送流水线

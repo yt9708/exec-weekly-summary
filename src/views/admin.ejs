@@ -9,79 +9,52 @@
 
     <!-- 推送日志 -->
     <div class="card" style="margin-bottom:16px;">
-      <div class="sub-section-title">📨 推送日志 — 最近 3 次</div>
+      <div class="sub-section-title">📨 推送日志 — 最近 <%= admin.pushLogs.length %> 次</div>
+      <% admin.pushLogs.forEach(function(log){ %>
       <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#d1fae5;color:#065f46;border-radius:9999px;font-weight:600;">成功</span>
+        <span style="font-size:11px;padding:3px 10px;background:<%= log.failed > 0 ? '#fef2f2' : '#d1fae5' %>;color:<%= log.failed > 0 ? '#dc2626' : '#065f46' %>;border-radius:9999px;font-weight:600;">
+          <%= log.failed > 0 ? '部分失败' : '成功' %>
+        </span>
         <div style="flex:1;">
-          <div style="font-size:14px;font-weight:600;">本周周报推送</div>
-          <div style="font-size:12px;color:#475569;margin-top:2px;">2026-05-18 08:30 → 5 人接收 · 耗时 3.2s</div>
+          <div style="font-size:14px;font-weight:600;"><%= log.week %> 周报推送</div>
+          <div style="font-size:12px;color:#475569;margin-top:2px;"><%= log.total %> 人 · 成功 <%= log.success %> · 失败 <%= log.failed %> · 未推送 <%= log.unpushed %></div>
         </div>
+        <span style="font-size:13px;font-weight:600;color:<%= log.rate === '100%' ? '#16a34a' : '#eab308' %>;"><%= log.rate %></span>
       </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#d1fae5;color:#065f46;border-radius:9999px;font-weight:600;">成功</span>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:600;">第 19 周周报推送</div>
-          <div style="font-size:12px;color:#475569;margin-top:2px;">2026-05-11 08:30 → 5 人接收 · 耗时 2.8s</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;">
-        <span style="font-size:11px;padding:3px 10px;background:#fef2f2;color:#dc2626;border-radius:9999px;font-weight:600;">失败</span>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:600;">第 18 周周报推送</div>
-          <div style="font-size:12px;color:#475569;margin-top:2px;">2026-05-04 08:30 → token 过期 · 已自动重试成功</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- API 调用日志 -->
-    <div class="card" style="margin-bottom:16px;">
-      <div class="sub-section-title">🔧 API 调用日志 — 今日</div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#eff6ff;color:#2563eb;border-radius:9999px;font-weight:600;">GET</span>
-        <div style="flex:1;font-size:13px;">/api/weekly-report</div>
-        <span style="font-size:12px;color:#94a3b8;">14:32 · 200 · 12ms</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#fefce8;color:#a16207;border-radius:9999px;font-weight:600;">POST</span>
-        <div style="flex:1;font-size:13px;">/api/report/regenerate</div>
-        <span style="font-size:12px;color:#94a3b8;">15:01 · 200 · 820ms</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
-        <span style="font-size:11px;padding:3px 10px;background:#fefce8;color:#a16207;border-radius:9999px;font-weight:600;">POST</span>
-        <div style="flex:1;font-size:13px;">/api/screenshot/generate</div>
-        <span style="font-size:12px;color:#94a3b8;">15:18 · 200 · 3.4s</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;">
-        <span style="font-size:11px;padding:3px 10px;background:#fefce8;color:#a16207;border-radius:9999px;font-weight:600;">POST</span>
-        <div style="flex:1;font-size:13px;">/manage/api/decisions</div>
-        <span style="font-size:12px;color:#94a3b8;">16:05 · 200 · 8ms</span>
-      </div>
-    </div>
-
-    <!-- 目标用户列表 -->
-    <div class="card" style="margin-bottom:16px;">
-      <div class="sub-section-title">👥 推送目标用户 — 10 人</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;">Leung · CEO</span>
-        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;">张伟 · 研发部长</span>
-        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;">王芳 · 市场部长</span>
-        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;">李晨 · 财务部长</span>
-        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;">赵强 · 供应链部长</span>
-        <span style="font-size:12px;padding:4px 12px;background:#e2e8f0;border-radius:9999px;color:#94a3b8;font-weight:400;">+ 5 人已暂停</span>
-      </div>
+      <% }) %>
     </div>
 
     <!-- 系统状态 -->
     <div class="card" style="margin-bottom:16px;">
       <div class="sub-section-title">📊 系统状态</div>
       <div class="health-grid">
-        <div class="health-item"><div class="label">Express 服务</div><div class="value"><span class="dot green"></span> 运行中</div></div>
-        <div class="health-item"><div class="label">定时推送</div><div class="value"><span class="dot green"></span> 每周一 8:30</div></div>
-        <div class="health-item"><div class="label">数据存储</div><div class="value"><span class="dot green"></span> 内存模式</div></div>
-        <div class="health-item"><div class="label">AI 摘要</div><div class="value"><span class="dot yellow"></span> 降级(规则)</div></div>
-        <div class="health-item"><div class="label">企微推送</div><div class="value"><span class="dot yellow"></span> Mock</div></div>
-        <div class="health-item"><div class="label">日历同步</div><div class="value"><span class="dot yellow"></span> Mock</div></div>
+        <% admin.systemStatus.forEach(function(s){ %>
+        <div class="health-item"><div class="label"><%= s.label %></div><div class="value"><span class="dot <%= s.status %>"></span> <%= s.value %></div></div>
+        <% }) %>
       </div>
+    </div>
+
+    <!-- 用户列表 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">👥 用户列表 — <%= admin.userList.length + admin.pausedUsers %> 人</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <% admin.userList.forEach(function(u){ %>
+        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;"><%= u.name %> · <%= u.role %></span>
+        <% }) %>
+        <span style="font-size:12px;padding:4px 12px;background:#e2e8f0;border-radius:9999px;color:#94a3b8;font-weight:400;">+ <%= admin.pausedUsers %> 人已暂停</span>
+      </div>
+    </div>
+
+    <!-- API 日志 -->
+    <div class="card">
+      <div class="sub-section-title">🔧 API 今日调用 — <%= admin.apiLogs.length %> 次</div>
+      <% admin.apiLogs.forEach(function(log){ %>
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
+        <span style="font-size:11px;padding:3px 10px;background:<%= log.method === 'GET' ? '#eff6ff' : '#fefce8' %>;color:<%= log.method === 'GET' ? '#2563eb' : '#a16207' %>;border-radius:9999px;font-weight:600;"><%= log.method %></span>
+        <div style="flex:1;font-size:13px;"><%= log.path %></div>
+        <span style="font-size:12px;color:#94a3b8;"><%= log.time %> · <%= log.statusCode %> · <%= log.duration %></span>
+      </div>
+      <% }) %>
     </div>
   </div>
 </div>
