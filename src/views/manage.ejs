@@ -277,7 +277,7 @@ function addDate() {
   var type = prompt('类型 (birthday/anniversary):','birthday');
   var name = prompt('姓名:'); if(!name) return;
   var date = prompt('日期 (MM-DD):');
-  fetch('/manage/api/dates', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({type:type||'birthday', name:name, date:date||'01-01', dateFull:'2026-'+date, department:''}) })
+  fetch('/manage/api/dates', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({type:type||'birthday', name:name, date:date||'01-01', dateFull:'2026-' + (date||'01-01'), department:''}) })
     .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
 }
 

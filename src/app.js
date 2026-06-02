@@ -46,12 +46,17 @@ scheduler.registerPushPipeline(async () => {
     data.aiSummary.generatedAt = new Date().toISOString();
   }
 
-  // 2. 截图
+  // 3. 截图
   const screenshotUrl = BASE_URL + '/screenshot';
   const filename = 'auto-push-' + Date.now() + '.png';
-  const imagePath = await screenshotService.captureReportImage(screenshotUrl, filename);
+  let imagePath;
+  try {
+    imagePath = await screenshotService.captureReportImage(screenshotUrl, filename);
+  } catch(e) {
+    console.error('[Pipeline] 截图失败，跳过截图步骤:', e.message);
+  }
 
-  // 2. 推送
+  // 4. 推送
   const mockUsers = ['leung', 'zhangwei', 'wangfang', 'lichen', 'zhaoqiang'];
   const reportUrl = BASE_URL + '/';
   const result = await wecomService.pushWeeklyReport(mockUsers, imagePath, reportUrl);

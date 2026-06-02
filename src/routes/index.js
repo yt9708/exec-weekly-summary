@@ -7,7 +7,7 @@ const wecomService = require('../services/wecom-service');
 const scheduler = require('../services/scheduler');
 const aiService = require('../services/ai-service');
 const store = require('../services/data-store');
-const BASE_URL = 'http://127.0.0.1:' + (process.env.PORT || 3457);
+const BASE_URL = process.env.BASE_URL || ('http://127.0.0.1:' + (process.env.PORT || 3456));
 
 // 读取推送渠道配置
 function getPushChannels() {
@@ -188,7 +188,7 @@ router.post('/api/push/now', async (req, res) => {
     const imagePath = await screenshotService.captureReportImage(screenshotUrl, filename);
 
     // 2. 推送
-    const mockUsers = ['leung', 'zhangwei', 'wangfang'];
+    const mockUsers = ['leung', 'zhangwei', 'wangfang', 'lichen', 'zhaoqiang'];
     const reportUrl = BASE_URL + '/';
     const pushResult = await wecomService.pushWeeklyReport(mockUsers, imagePath, reportUrl);
 

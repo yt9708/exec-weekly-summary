@@ -25,10 +25,11 @@ class AIService {
     const sections = [];
 
     // 决策清单摘要
-    const actionItems = (report.decisions.actionRequired || []).length;
-    const decisionItems = (report.decisions.needsDecision || []).length;
+    const decisions = report.decisions || {};
+    const actionItems = (decisions.actionRequired || []).length;
+    const decisionItems = (decisions.needsDecision || []).length;
     if (actionItems + decisionItems > 0) {
-      const urgent = (report.decisions.actionRequired || []).filter(d => d.urgency <= 2);
+      const urgent = (decisions.actionRequired || []).filter(d => d.urgency <= 2);
       sections.push(`待处理事项：${actionItems}项需紧急处理，${decisionItems}项需决策。${urgent.length > 0 ? '最紧急：' + urgent.map(d => d.title).join('、') : ''}`);
     }
 
@@ -96,7 +97,7 @@ ${context}`;
 
     try {
       const result = await this._callDeepSeek(prompt);
-      return this._parseResponse(result);
+      return this._parseResponse(result, report);
     } catch (err) {
       console.error('[AI Service] API 调用失败，降级到规则生成:', err.message);
       return this._fallbackGenerate(report);
@@ -162,7 +163,7 @@ ${context}`;
   /**
    * 解析 AI 返回的文本为摘要项数组
    */
-  _parseResponse(text) {
+  _parseResponse(text, report) {
     const items = [];
     const lines = text.split('\n').filter(l => l.trim());
 
@@ -203,8 +204,9 @@ ${context}`;
     }
 
     // 决策事项
-    const actionCount = (report.decisions?.actionRequired || []).length;
-    const decisionCount = (report.decisions?.needsDecision || []).length;
+    const fallbackDecisions = report.decisions || {};
+    const actionCount = (fallbackDecisions.actionRequired || []).length;
+    const decisionCount = (fallbackDecisions.needsDecision || []).length;
     if (actionCount + decisionCount > 0) {
       items.push({ status: 'yellow', text: `需要关注 — 本周有待办事项 ${actionCount + decisionCount} 项，其中 ${actionCount} 项需要紧急处理。` });
     }
