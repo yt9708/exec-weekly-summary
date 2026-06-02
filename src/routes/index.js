@@ -51,15 +51,6 @@ router.get('/history', (req, res) => {
   });
 });
 
-// 推送记录
-router.get('/push-logs', (req, res) => {
-  res.render('push-logs', {
-    title: '推送记录',
-    page: 'push-logs',
-    report: store.getReport()
-  });
-});
-
 // API - 获取完整周报数据
 router.get('/api/weekly-report', (req, res) => {
   res.json({ status: 'ok', data: store.getReport() });
