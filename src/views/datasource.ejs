@@ -4,14 +4,14 @@
     <div class="section-header">
       <div class="section-icon">🔌</div>
       <span class="section-title">数据源管理</span>
-      <span class="section-sub">选择周报数据来源</span>
+      <span class="section-sub">数据来源 + 推送渠道</span>
     </div>
 
+    <!-- ══════ 数据来源 ══════ -->
     <div style="margin-bottom:12px;font-size:13px;color:#64748d;font-weight:300;">
       开启的数据源将在每周生成周报时自动拉取数据。关闭后对应内容不出现在周报中。
     </div>
 
-    <!-- 已启用 -->
     <div class="sub-section-title" style="margin-top:12px;">✅ 已启用的数据源</div>
     <% var enabledSources = datasources.filter(d => d.enabled); %>
     <% if(enabledSources.length === 0){ %>
@@ -68,6 +68,27 @@
     <% }) %>
 
     <div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:400;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
+
+    <!-- ══════ 推送渠道 ══════ -->
+    <div style="margin-top:36px;padding-top:24px;border-top:1px solid #e3e8ee;">
+      <div style="font-size:13px;font-weight:300;color:#64748d;margin-bottom:16px;">
+        📨 选择周报推送渠道 — 开启后在主页生成对应的推送和日历同步按钮
+      </div>
+      <% var channels = typeof pushChannels !== 'undefined' ? pushChannels : []; %>
+      <% channels.forEach(function(ch){ %>
+      <div class="card" style="margin-bottom:10px;padding:16px 20px;display:flex;align-items:center;gap:16px;<%= ch.enabled ? '' : 'opacity:0.5;' %>">
+        <div style="font-size:24px;"><%= ch.icon %></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:400;"><%= ch.name %></div>
+          <div style="font-size:12px;color:#64748d;"><%= ch.description %></div>
+        </div>
+        <label class="toggle-switch" onclick="toggleChannel('<%= ch.id %>')">
+          <input type="checkbox" <%= ch.enabled ? 'checked' : '' %>>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <% }) %>
+    </div>
   </div>
 </div>
 
@@ -81,6 +102,12 @@
 </style>
 
 <script>
+function toggleChannel(id) {
+  fetch('/datasource/api/push-channels/' + id + '/toggle', { method:'PUT' })
+    .then(r => r.json())
+    .then(r => { if(r.status === 'ok') location.reload(); });
+}
+
 function toggleSource(id) {
   fetch('/datasource/api/sources/' + id + '/toggle', { method:'PUT' })
     .then(r => r.json())

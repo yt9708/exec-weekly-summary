@@ -10,10 +10,17 @@
       "configured": true,
       "config": {
         "type": "wecom-api",
-        "scopes": ["messages", "approvals", "contacts"],
+        "scopes": [
+          "messages",
+          "approvals",
+          "contacts"
+        ],
         "updateInterval": 3600
       },
-      "modules": ["decisions", "teamUpdates"]
+      "modules": [
+        "decisions",
+        "teamUpdates"
+      ]
     },
     {
       "id": "hesi",
@@ -25,10 +32,16 @@
       "configured": true,
       "config": {
         "type": "hesi-api",
-        "scopes": ["approvals", "budget"],
+        "scopes": [
+          "approvals",
+          "budget"
+        ],
         "updateInterval": 3600
       },
-      "modules": ["decisions", "healthCheck"]
+      "modules": [
+        "decisions",
+        "healthCheck"
+      ]
     },
     {
       "id": "email",
@@ -40,10 +53,14 @@
       "configured": true,
       "config": {
         "type": "email-api",
-        "scopes": ["importantMails"],
+        "scopes": [
+          "importantMails"
+        ],
         "updateInterval": 1800
       },
-      "modules": ["decisions"]
+      "modules": [
+        "decisions"
+      ]
     },
     {
       "id": "lark",
@@ -55,10 +72,18 @@
       "configured": false,
       "config": {
         "type": "lark-api",
-        "scopes": ["messages", "approvals", "calendar"],
+        "scopes": [
+          "messages",
+          "approvals",
+          "calendar"
+        ],
         "updateInterval": 3600
       },
-      "modules": ["decisions", "teamUpdates", "healthCheck"]
+      "modules": [
+        "decisions",
+        "teamUpdates",
+        "healthCheck"
+      ]
     },
     {
       "id": "internal-erp",
@@ -70,11 +95,17 @@
       "configured": false,
       "config": {
         "type": "custom-api",
-        "scopes": ["production", "inventory"],
+        "scopes": [
+          "production",
+          "inventory"
+        ],
         "updateInterval": 7200,
         "apiUrl": ""
       },
-      "modules": ["healthCheck", "warnings"]
+      "modules": [
+        "healthCheck",
+        "warnings"
+      ]
     },
     {
       "id": "sap",
@@ -86,11 +117,17 @@
       "configured": false,
       "config": {
         "type": "sap-api",
-        "scopes": ["finance", "supplyChain"],
+        "scopes": [
+          "finance",
+          "supplyChain"
+        ],
         "updateInterval": 7200,
         "apiUrl": ""
       },
-      "modules": ["healthCheck", "warnings"]
+      "modules": [
+        "healthCheck",
+        "warnings"
+      ]
     },
     {
       "id": "custom",
@@ -102,12 +139,40 @@
       "configured": false,
       "config": {
         "type": "custom-api",
-        "scopes": ["custom"],
+        "scopes": [
+          "custom"
+        ],
         "updateInterval": 3600,
         "apiUrl": ""
       },
       "modules": []
     }
   ],
-  "updatedAt": "2026-06-02"
+  "pushChannels": [
+    {
+      "id": "wecom",
+      "name": "企业微信",
+      "icon": "💬",
+      "enabled": true,
+      "hasCalendar": true,
+      "description": "推送图片卡片 + 同步日历"
+    },
+    {
+      "id": "lark",
+      "name": "飞书",
+      "icon": "🐦",
+      "enabled": false,
+      "hasCalendar": true,
+      "description": "推送消息卡片 + 同步日历"
+    },
+    {
+      "id": "email",
+      "name": "邮件",
+      "icon": "📧",
+      "enabled": false,
+      "hasCalendar": false,
+      "description": "发送邮件摘要"
+    }
+  ],
+  "updatedAt": "2026-06-02T01:51:01.207Z"
 }

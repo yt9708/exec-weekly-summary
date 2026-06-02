@@ -9,6 +9,14 @@ const aiService = require('../services/ai-service');
 const store = require('../services/data-store');
 const BASE_URL = 'http://127.0.0.1:' + (process.env.PORT || 3457);
 
+// 读取推送渠道配置
+function getPushChannels() {
+  try {
+    const ds = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '../data/datasources.json'), 'utf-8'));
+    return (ds.pushChannels || []).filter(c => c.enabled);
+  } catch (e) { return []; }
+}
+
 /**
  * 模板辅助函数：将文本中的数字+单位加粗
  * 匹配模式：数字（含小数）+ 可选空格 + 单位（万亿件个天周项%小时人元等）
@@ -29,7 +37,8 @@ router.get('/', (req, res) => {
   res.render('index', {
     title: '本周总结',
     page: 'current',
-    report: store.getReport()
+    report: store.getReport(),
+    pushChannels: getPushChannels()
   });
 });
 

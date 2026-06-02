@@ -16,12 +16,34 @@ function saveDatasources(data) {
 // 管理页面
 router.get('/', (req, res) => {
   const ds = loadDatasources();
-  res.render('datasource', { title: '数据源管理', page: 'datasource', datasources: ds.sources });
+  res.render('datasource', { 
+    title: '数据源管理', 
+    page: 'datasource', 
+    datasources: ds.sources,
+    pushChannels: ds.pushChannels || []
+  });
 });
 
-// API - 获取全部数据源
+// API - 获取全部数据源（含推送渠道）
 router.get('/api/sources', (req, res) => {
   res.json({ status: 'ok', data: loadDatasources() });
+});
+
+// API - 获取推送渠道
+router.get('/api/push-channels', (req, res) => {
+  const ds = loadDatasources();
+  res.json({ status: 'ok', data: ds.pushChannels || [] });
+});
+
+// API - 切换推送渠道
+router.put('/api/push-channels/:id/toggle', (req, res) => {
+  const ds = loadDatasources();
+  const channel = (ds.pushChannels || []).find(c => c.id === req.params.id);
+  if (!channel) return res.status(404).json({ status: 'error', message: '未找到推送渠道' });
+  channel.enabled = !channel.enabled;
+  ds.updatedAt = new Date().toISOString();
+  saveDatasources(ds);
+  res.json({ status: 'ok', data: channel });
 });
 
 // API - 切换数据源开关
