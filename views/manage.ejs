@@ -1,0 +1,288 @@
+<%- include('partials/header', { title, page, report }) %>
+<div class="zone" style="background:#fff;min-height:70vh;">
+  <div class="zone-inner">
+    <div class="section-header">
+      <div class="section-icon">⚙️</div>
+      <span class="section-title">数据管理</span>
+      <span class="section-sub">增删改 · 全部四模块</span>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="action-btn action-btn-primary" onclick="showAdd('decision')">+ 新增决策事项</button>
+      <button class="action-btn action-btn-accent" onclick="showAdd('event')">+ 新增事件</button>
+      <button class="action-btn" style="background:#1e293b;color:#fff;" onclick="showAdd('warning')">+ 新增预警</button>
+      <button style="font-size:12px;padding:5px 12px;border-radius:9999px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;margin-left:auto;" onclick="resetData()">重置数据</button>
+    </div>
+
+    <!-- 决策事项 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">📋 决策清单（<span id="decCount"><%= report.decisions.actionRequired.length + report.decisions.needsDecision.length %></span> 项待处理 · <%= report.decisions.infoOnly.length %> 项知会）</div>
+      <div id="decisionList">
+        <!-- 需处理事项 -->
+        <% 
+          var urgentItems = report.decisions.actionRequired.concat(report.decisions.needsDecision);
+          urgentItems.forEach(function(item){ 
+        %>
+        <div class="decision-item" data-id="<%= item.id %>">
+          <div class="decision-tag <%= item.level %>"><% if(item.level==='action'){%>🆘<%}else{%>⚡<%}%></div>
+          <div class="decision-body">
+            <div class="decision-title"><%= item.title %></div>
+            <div class="decision-desc"><%= item.description %></div>
+            <div class="decision-meta">
+              <span class="decision-source"><%= item.source %></span>
+              <span style="font-size:11px;color:#94a3b8;">紧急度: <%= item.urgency %></span>
+              <span style="font-size:11px;color:#94a3b8;">#<%= item.id %></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editDecision('<%= item.id %>')">✏️</button>
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deleteDecision('<%= item.id %>')">🗑️</button>
+          </div>
+        </div>
+        <% }) %>
+        <!-- 知会事项（默认折叠） -->
+        <div id="mgmtInfoItems" style="display:none;">
+        <% report.decisions.infoOnly.forEach(function(item){ %>
+        <div class="decision-item" data-id="<%= item.id %>">
+          <div class="decision-tag info">ℹ️</div>
+          <div class="decision-body">
+            <div class="decision-title"><%= item.title %></div>
+            <div class="decision-desc"><%= item.description %></div>
+            <div class="decision-meta">
+              <span class="decision-source"><%= item.source %></span>
+              <span style="font-size:11px;color:#94a3b8;">#<%= item.id %></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editDecision('<%= item.id %>')">✏️</button>
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deleteDecision('<%= item.id %>')">🗑️</button>
+          </div>
+        </div>
+        <% }) %>
+        </div>
+        <div class="folded-items" onclick="toggleMgmtInfo()" style="margin-top:4px;">+ <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开</div>
+      </div>
+    </div>
+
+    <!-- 事件 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">📌 事件跟踪（<span id="evtCount"><%= report.events.length %></span> 项）</div>
+      <% report.events.forEach(function(evt){ %>
+      <div class="event-item" data-id="<%= evt.id %>">
+        <span class="event-icon"><% if(evt.status==='red'){%>🔴<%}else{%>🟡<%}%></span>
+        <div class="event-body" style="flex:1;"><strong><%= evt.title %></strong> — <%= evt.description %></div>
+        <div style="display:flex;gap:4px;flex-shrink:0;">
+          <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editEvent('<%= evt.id %>')">✏️</button>
+          <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deleteEvent('<%= evt.id %>')">🗑️</button>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <!-- 预警 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">⚠️ 下周预警（<span id="wrnCount"><%= report.warnings.length %></span> 项）</div>
+      <% report.warnings.forEach(function(w){ %>
+      <div class="warn-item" data-id="<%= w.id %>">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="warn-title">
+              <% if(w.level==='high'){%><span style="color:#ef4444;">●</span><%}else if(w.level==='medium'){%><span style="color:#f59e0b;">●</span><%}else{%><span style="color:#10b981;">●</span><%}%>
+              <%= w.title %>
+            </div>
+            <div class="warn-desc"><%= w.description %></div>
+            <div class="warn-prep">⏰ <%= w.deadline %></div>
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editWarning('<%= w.id %>')">✏️</button>
+            <button style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deleteWarning('<%= w.id %>')">🗑️</button>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <!-- 业务体检 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">📊 业务体检区<button style="float:right;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="editHealth()">编辑</button></div>
+      <div class="health-grid" id="healthGrid">
+        <% report.healthCheck.items.forEach(function(h, idx){ %>
+        <div class="health-item" data-hidx="<%= idx %>">
+          <div class="label"><%= h.team %> · <%= h.metric %></div>
+          <div class="value"><span class="dot <%= h.status %>"></span> <%- boldNums(h.value) %> · <%= h.detail %></div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- 团队动态 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">👥 团队动态</div>
+      <div style="margin-bottom:10px;">
+        <strong style="font-size:13px;font-weight:400;">人事变动</strong>
+        <button style="float:right;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="addPersonnel()">+ 新增</button>
+        <% report.teamUpdates.personnelChanges.forEach(function(p, idx){ %>
+        <div class="event-item">
+          <span class="event-icon"><% if(p.type==='onboard'){%>👋<%}else{%>🚪<%}%></span>
+          <div class="event-body" style="flex:1;"><%= p.type==='onboard'?'入职':'离职' %> · <%= p.name %> · <%= p.department %><%= p.role?'（'+p.role+'）':'' %> · <%= p.date||'待确认' %></div>
+          <button style="font-size:11px;padding:2px 6px;border-radius:4px;border:1px solid #fee2e2;background:#fff;color:#ef4444;cursor:pointer;" onclick="deletePersonnel(<%= idx %>)">✕</button>
+        </div>
+        <% }) %>
+      </div>
+      <div>
+        <strong style="font-size:13px;font-weight:400;">重要日期</strong>
+        <button style="float:right;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #e3e8ee;background:#fff;color:#64748d;cursor:pointer;" onclick="addDate()">+ 新增</button>
+        <% report.teamUpdates.importantDates.forEach(function(d){ %>
+        <div class="event-item">
+          <span class="event-icon"><% if(d.type==='birthday'){%>🎂<%}else{%>🎉<%}%></span>
+          <div class="event-body" style="flex:1;"><%= d.name %> · <%= d.dateFull||d.date %> · <%= d.type==='birthday'?'生日':'入职'+d.years+'周年' %> · <%= d.department %></div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:400;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
+  </div>
+</div>
+
+<script>
+// 知会事项展开/折叠（管理页）
+function toggleMgmtInfo() {
+  var el = document.getElementById('mgmtInfoItems');
+  var btn = event.target;
+  if (el.style.display === 'none' || el.style.display === '') {
+    el.style.display = 'block';
+    btn.textContent = '− 收起知会事项';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = '+ <%= report.decisions.infoOnly.length %> 项知会即可 · 点击展开';
+  }
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = type === 'error' ? '#fef2f2' : '#d1fae5';
+  el.style.color = type === 'error' ? '#dc2626' : '#065f46';
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display = 'none'; }, 2500);
+}
+
+// 删除决策
+function deleteDecision(id) { if(!confirm('确认删除？')) return;
+  fetch('/manage/api/decisions/' + id, { method: 'DELETE' }).then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } }); }
+
+// 删除事件
+function deleteEvent(id) { if(!confirm('确认删除？')) return;
+  fetch('/manage/api/events/' + id, { method: 'DELETE' }).then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } }); }
+
+// 删除预警
+function deleteWarning(id) { if(!confirm('确认删除？')) return;
+  fetch('/manage/api/warnings/' + id, { method: 'DELETE' }).then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } }); }
+
+// 编辑 - 使用 prompt 简易输入
+function editDecision(id) {
+  var items = document.querySelectorAll('[data-id="'+id+'"]');
+  if(!items.length) return;
+  var item = items[0];
+  var title = prompt('事项标题:', item.querySelector('.decision-title').textContent);
+  if(!title) return;
+  var desc = prompt('描述:', item.querySelector('.decision-desc').textContent);
+  var urgency = prompt('紧急度(1-6):', '');
+  var body = { title: title, description: desc };
+  if(urgency) body.urgency = parseInt(urgency);
+  fetch('/manage/api/decisions/' + id, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } });
+}
+
+function editEvent(id) {
+  var title = prompt('事件标题:');
+  if(!title) return;
+  var desc = prompt('事件描述:');
+  var status = prompt('状态 (red/yellow):', 'yellow');
+  fetch('/manage/api/events/' + id, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:title, description:desc, status:status||'yellow'}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } });
+}
+
+function editWarning(id) {
+  var title = prompt('预警标题:');
+  if(!title) return;
+  var desc = prompt('预警描述:');
+  var level = prompt('级别 (high/medium/low):', 'medium');
+  var deadline = prompt('建议时间:');
+  fetch('/manage/api/warnings/' + id, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:title, description:desc, level:level||'medium', deadline:deadline}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } });
+}
+
+// 新增
+function showAdd(type) {
+  if(type === 'decision') {
+    var title = prompt('事项标题:');
+    if(!title) return;
+    var desc = prompt('描述:');
+    var level = prompt('级别 (action/decision/info):', 'action');
+    var source = prompt('来源:');
+    var urgency = prompt('紧急度(1-6):', '3');
+    fetch('/manage/api/decisions', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:title, description:desc, level:level||'action', source:source||'手动录入', urgency:parseInt(urgency)||3, link:'#'}) })
+      .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ toast('已添加'); location.reload(); }else{ toast(r.message,'error'); } });
+  } else if(type === 'event') {
+    var title = prompt('事件标题:');
+    if(!title) return;
+    var desc = prompt('事件描述:');
+    var status = prompt('状态 (red/yellow):', 'yellow');
+    fetch('/manage/api/events', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:title, description:desc, status:status||'yellow'}) })
+      .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+  } else if(type === 'warning') {
+    var title = prompt('预警标题:'); if(!title) return;
+    var desc = prompt('预警描述:');
+    var level = prompt('级别 (high/medium/low):', 'medium');
+    var deadline = prompt('建议时间:');
+    fetch('/manage/api/warnings', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:title, description:desc, level:level||'medium', deadline:deadline||'建议尽快处理'}) })
+      .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+  }
+}
+
+// 编辑业务体检
+function editHealth() {
+  var idx = prompt('编辑第几个(0-3):', '0');
+  if(idx===''||idx===null) return;
+  var team = prompt('部门:');
+  var metric = prompt('指标:');
+  var value = prompt('数值:');
+  var status = prompt('状态(green/yellow/red):','green');
+  var detail = prompt('详情:');
+  fetch('/manage/api/health/'+idx, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({team:team, metric:metric, value:value, status:status||'green', detail:detail}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); }else{ toast(r.message,'error'); } });
+}
+
+// 新增人事变动
+function addPersonnel() {
+  var type = prompt('类型 (onboard/offboard):','onboard');
+  var name = prompt('姓名:'); if(!name) return;
+  var dept = prompt('部门:');
+  var role = prompt('职位:');
+  fetch('/manage/api/personnel', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({type:type||'onboard', name:name, department:dept||'', role:role||''}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+}
+
+// 删除人事变动
+function deletePersonnel(idx) {
+  if(!confirm('确认删除？')) return;
+  fetch('/manage/api/personnel/'+idx, { method:'DELETE' }).then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+}
+
+// 新增重要日期
+function addDate() {
+  var type = prompt('类型 (birthday/anniversary):','birthday');
+  var name = prompt('姓名:'); if(!name) return;
+  var date = prompt('日期 (MM-DD):');
+  fetch('/manage/api/dates', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({type:type||'birthday', name:name, date:date||'01-01', dateFull:'2026-' + (date||'01-01'), department:''}) })
+    .then(r=>r.json()).then(r=>{ if(r.status==='ok'){ location.reload(); } });
+}
+
+// 重置
+function resetData() { if(!confirm('确认重置所有数据？')) return;
+  fetch('/manage/api/reset', { method:'POST' }).then(r=>r.json()).then(r=>{ if(r.status==='ok'){ toast('已重置'); location.reload(); } }); }
+</script>
+<%- include('partials/footer') %>

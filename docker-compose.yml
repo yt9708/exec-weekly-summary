@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  weekly-report:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: weekly-report
+    restart: unless-stopped
+    ports:
+      - "3457:3457"
+    environment:
+      - NODE_ENV=production
+      - PORT=3457
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - DEEPSEEK_API_URL=${DEEPSEEK_API_URL:-https://api.deepseek.com/v1/chat/completions}
+      - WECOM_CORP_ID=${WECOM_CORP_ID:-}
+      - WECOM_AGENT_ID=${WECOM_AGENT_ID:-}
+      - WECOM_SECRET=${WECOM_SECRET:-}
+    volumes:
+      - ./snapshots:/app/snapshots
+      - ./logs:/app/logs
+      - ./data:/app/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

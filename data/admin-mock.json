@@ -1,0 +1,51 @@
+{
+  "pushLogs": [
+    { "week": "W20（本周）", "total": 10, "success": 10, "failed": 0, "unpushed": 0, "rate": "100%" },
+    { "week": "W19", "total": 10, "success": 10, "failed": 0, "unpushed": 0, "rate": "100%" },
+    { "week": "W18", "total": 10, "success": 8, "failed": 2, "unpushed": 0, "rate": "80%" },
+    { "week": "W17", "total": 10, "success": 9, "failed": 0, "unpushed": 1, "rate": "90%" }
+  ],
+  "currentWeekDetail": [
+    { "name": "Leung (CEO)", "status": "success", "time": "05/12 08:30", "note": "已读" },
+    { "name": "张伟 (研发部长)", "status": "success", "time": "05/12 08:30", "note": "已读" },
+    { "name": "王芳 (市场部长)", "status": "success", "time": "05/12 08:31", "note": "已读" },
+    { "name": "李晨 (财务部长)", "status": "failed", "time": "05/12 08:32", "note": "token过期" },
+    { "name": "赵强 (供应链部长)", "status": "unpushed", "time": "—", "note": "休假中 · 自动跳过" }
+  ],
+  "apiLogs": [
+    { "method": "GET", "path": "/api/weekly-report", "time": "14:32", "statusCode": 200, "duration": "12ms" },
+    { "method": "POST", "path": "/api/report/regenerate", "time": "15:01", "statusCode": 200, "duration": "820ms" },
+    { "method": "POST", "path": "/api/screenshot/generate", "time": "15:18", "statusCode": 200, "duration": "3.4s" },
+    { "method": "POST", "path": "/manage/api/decisions", "time": "16:05", "statusCode": 200, "duration": "8ms" }
+  ],
+  "userList": [
+    { "name": "Leung", "role": "CEO", "status": "active" },
+    { "name": "张伟", "role": "研发部长", "status": "active" },
+    { "name": "王芳", "role": "市场部长", "status": "active" },
+    { "name": "李晨", "role": "财务部长", "status": "active" },
+    { "name": "赵强", "role": "供应链部长", "status": "active" }
+  ],
+  "pausedUsers": 5,
+  "systemStatus": [
+    { "label": "Express 服务", "status": "green", "value": "运行中" },
+    { "label": "定时推送", "status": "green", "value": "每周一 8:30" },
+    { "label": "数据存储", "status": "green", "value": "内存模式" },
+    { "label": "AI 摘要", "status": "yellow", "value": "降级(规则)" },
+    { "label": "企微推送", "status": "yellow", "value": "Mock" },
+    { "label": "日历同步", "status": "yellow", "value": "Mock" }
+  ],
+  "runStats": [
+    { "label": "API 调用总量", "value": "1,247 次" },
+    { "label": "平均响应时间", "value": "186 ms" },
+    { "label": "错误率", "value": "0.3%", "status": "green" },
+    { "label": "截图生成量", "value": "8 张" },
+    { "label": "AI 调用次数", "value": "12 次" },
+    { "label": "数据变更次数", "value": "47 次" }
+  ],
+  "operationLogs": [
+    { "type": "变更", "action": "新增决策事项：审核Q3预算", "time": "14:32", "user": "leung" },
+    { "type": "编辑", "action": "修改预警：发布会物料截止日", "time": "15:01", "user": "leung" },
+    { "type": "删除", "action": "删除过期决策事项", "time": "16:05", "user": "leung" },
+    { "type": "系统", "action": "定时推送流水线执行完成", "time": "08:30", "user": "scheduler" }
+  ]
+}

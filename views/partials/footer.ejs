@@ -1,0 +1,194 @@
+<div class="footer">高管周总结 · 每周一早 8:30 自动推送 · 数据模拟展示</div>
+
+<% var infoCount = (typeof report !== 'undefined' && report.decisions) ? report.decisions.infoOnly.length : 0; %>
+<script>
+// 知会事项展开/折叠
+function toggleInfoItems() {
+  var el = document.getElementById('infoItems');
+  var btn = document.getElementById('toggleInfo');
+  if(!el || !btn) return;
+  if (el.style.display === 'none' || el.style.display === '') {
+    el.style.display = 'block';
+    btn.textContent = '− 收起知会事项';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = '+ <%= infoCount %> 项知会即可 · 点击展开';
+  }
+}
+
+// 复制 AI 摘要
+function copySummary() {
+  var items = document.querySelectorAll('#summaryContainer .summary-text');
+  var text = '';
+  items.forEach(function(el) { text += el.textContent.trim() + '\n'; });
+  navigator.clipboard.writeText(text.trim()).then(function() {
+    var btns = document.querySelectorAll('.summary-btn');
+    var btn = btns[btns.length - 1];
+    var orig = btn.textContent;
+    btn.textContent = '✓ 已复制';
+    setTimeout(function() { btn.textContent = orig; }, 1500);
+  }).catch(function() {
+    alert('复制失败，请手动选择文字复制');
+  });
+}
+
+// 重新生成 AI 摘要
+function regenerateSummary() {
+  var btn = document.getElementById('regenerateBtn');
+  var label = document.getElementById('btnLabel');
+  var container = document.getElementById('summaryContainer');
+  var errBox = document.getElementById('regenerateError');
+
+  btn.disabled = true;
+  label.textContent = '生成中...';
+  errBox.style.display = 'none';
+
+  fetch('/api/report/regenerate', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error('生成失败');
+      container.innerHTML = '';
+      resp.data.items.forEach(function(item) {
+        container.innerHTML +=
+          '<div class="summary-item"><span class="summary-dot ' + item.status + '"></span><div class="summary-text">' + item.text + '</div></div>';
+      });
+      document.getElementById('generateTime').textContent = new Date().toISOString().slice(0,10);
+      label.textContent = '重新生成';
+      btn.disabled = false;
+    })
+    .catch(function() {
+      errBox.style.display = 'block';
+      label.textContent = '重新生成';
+      btn.disabled = false;
+    });
+}
+
+// 手动推送至企微
+function pushToWecom(el) {
+  var btn = el;
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '📤 推送中...';
+  result.style.display = 'none';
+
+  fetch('/api/push/now', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '📨 ' + resp.message;
+      btn.textContent = '✓ 已推送';
+      btn.disabled = true;
+    })
+    .catch(function(err) {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 推送失败: ' + (err.message || '请重试');
+      btn.textContent = '📨 手动推送至企微';
+      btn.disabled = false;
+    });
+}
+
+// 确认生成周报
+function confirmReport() {
+  var btn = document.getElementById('confirmBtn');
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '⏳ 处理中...';
+  result.style.display = 'none';
+
+  fetch('/api/report/confirm', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '✓ ' + resp.message + '<br><span style="font-size:11px;opacity:0.7;">包含 ' + resp.data.syncableCount + ' 个可同步日历事项</span>';
+      btn.textContent = '✓ 已确认';
+      btn.disabled = true;
+    })
+    .catch(function() {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 确认失败，请重试';
+      btn.textContent = '✓ 确认生成本周总结';
+      btn.disabled = false;
+    });
+}
+
+// 生成推送截图
+function generateScreenshot(el) {
+  var btn = el;
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '⏳ 截图生成中...';
+  result.style.display = 'none';
+
+  fetch('/api/screenshot/generate', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '🖼️ 截图已生成<br>' +
+        '<span style="font-size:11px;opacity:0.7;">文件名: ' + resp.data.filename + '</span><br>' +
+        '<a href="' + resp.data.url + '" target="_blank" style="color:#533afd;font-size:12px;text-decoration:underline;">查看截图 →</a>';
+      btn.textContent = '🖼️ 重新截图';
+      btn.disabled = false;
+    })
+    .catch(function(err) {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 截图生成失败: ' + (err.message || '请重试');
+      btn.textContent = '🖼️ 生成推送截图';
+      btn.disabled = false;
+    });
+}
+
+// 确认生成并同步到企微日历
+function confirmAndSync() {
+  var btn = document.getElementById('confirmSyncBtn');
+  var result = document.getElementById('confirmResult');
+  btn.disabled = true;
+  btn.textContent = '⏳ 同步中...';
+  result.style.display = 'none';
+
+  fetch('/api/report/confirm-and-sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: 'leung' })
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status !== 'ok') throw new Error(resp.message);
+      result.style.display = 'block';
+      result.className = '';
+      result.style.background = '#d1fae5';
+      result.style.color = '#065f46';
+      result.innerHTML = '✓ ' + resp.message + '<br><span style="font-size:11px;opacity:0.7;">成功同步 ' + resp.data.syncResult.synced + ' 个事项到企微日历</span>';
+      btn.textContent = '✓ 已同步';
+      btn.disabled = true;
+      document.getElementById('confirmBtn').disabled = true;
+    })
+    .catch(function() {
+      result.style.display = 'block';
+      result.style.background = '#fef2f2';
+      result.style.color = '#dc2626';
+      result.innerHTML = '⚠️ 同步失败，请重试';
+      btn.textContent = '📅 确认生成并同步至企微日历';
+      btn.disabled = false;
+    });
+}
+</script>
+</body>
+</html>
