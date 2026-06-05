@@ -3,14 +3,29 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 
+const DATA_PATH = path.join(__dirname, '../data/datasources.json');
+
+// 内存缓存 — 在只读环境下也能正常工作
+let cache = null;
+
 function loadDatasources() {
-  const dataPath = path.join(__dirname, '../data/datasources.json');
-  return JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  if (cache) return cache;
+  try {
+    cache = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+  } catch (e) {
+    console.warn('[datasource] 读取 datasources.json 失败，使用默认配置:', e.message);
+    cache = { sources: [], pushChannels: [], updatedAt: new Date().toISOString() };
+  }
+  return cache;
 }
 
 function saveDatasources(data) {
-  const dataPath = path.join(__dirname, '../data/datasources.json');
-  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), 'utf-8');
+  cache = data; // 始终更新内存
+  try {
+    fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('[datasource] 写入 datasources.json 失败（只读环境），仅保存在内存:', e.message);
+  }
 }
 
 // 管理页面
@@ -69,3 +84,4 @@ router.put('/api/sources/:id', (req, res) => {
 });
 
 module.exports = router;
+module.exports.loadDatasources = loadDatasources;
