@@ -9,12 +9,18 @@ const aiService = require('../services/ai-service');
 const store = require('../services/data-store');
 const BASE_URL = process.env.BASE_URL || ('http://127.0.0.1:' + (process.env.PORT || 3456));
 
-// 读取推送渠道配置
+// 读取推送渠道配置（共享 datasource 模块的内存缓存，兼容只读环境）
 function getPushChannels() {
   try {
-    const ds = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '../data/datasources.json'), 'utf-8'));
+    const dsRoute = require('./datasource');
+    const ds = dsRoute.loadDatasources();
     return (ds.pushChannels || []).filter(c => c.enabled);
-  } catch (e) { return []; }
+  } catch (e) {
+    // 如果 datasource 模块加载失败，使用默认配置
+    return [
+      { id: 'wecom', name: '企业微信', icon: '💬', enabled: true, hasCalendar: true, description: '推送图片卡片 + 同步日历' }
+    ];
+  }
 }
 
 /**

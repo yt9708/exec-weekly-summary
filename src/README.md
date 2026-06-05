@@ -193,35 +193,31 @@ docker run -p 3457:3456 exec-weekly-summary
 
 ---
 
-## 项目结构
+## 目录结构
 
 ```
-exec-weekly-summary/
-├── AGENTS.md               # AI 开发助手使用说明
-├── README.md               # 本文件，项目简要说明
-├── CLAUDE.md               # CodeBuddy 开发上下文配置
-├── .gitignore
-│
-├── docs/                   # 产品文档区
-│   ├── prd/                # PRD 需求文档
-│   ├── decisions/          # 关键决策记录
-│   ├── roadmap-v1.md       # 路线图
-│   └── deployment-guide.md # 部署指南
-│
-├── assets/                 # 素材区
-│   ├── design/             # 设计原型 HTML
-│   ├── bug/                # 测试报错截图
-│   └── reference/          # 参考图 / 灵感收集
-│
-├── notes/                  # 学习笔记（踩坑记录、技术方案）
-│
-└── src/                    # 全部代码（独立目录）
-    ├── app.js              # 入口文件
-    ├── routes/             # 路由模块
-    ├── services/           # 业务服务
-    ├── views/              # EJS 模板
-    ├── data/               # Mock 数据文件
-    └── package.json        # 依赖
+src/
+├── app.js                  # 入口文件
+├── routes/                 # 路由模块
+│   ├── index.js           # 主页路由
+│   ├── datasource.js      # 数据源管理
+│   ├── admin.js           # 管理后台
+│   └── manage.js          # 配置管理
+├── services/               # 业务服务
+│   ├── ai-service.js      # AI 摘要生成
+│   ├── data-store.js      # 数据存储
+│   ├── scheduler.js       # 定时任务
+│   ├── wecom-service.js   # 企微推送
+│   └── ...                # 其他服务
+├── views/                  # EJS 模板
+│   ├── index.ejs          # 用户主页
+│   ├── admin.ejs          # 管理后台
+│   ├── datasource.ejs     # 数据源管理
+│   └── partials/          # 通用组件
+├── public/                 # 静态资源
+├── data/                   # 数据文件
+│   └── datasources.json   # 数据源配置
+└── package.json
 ```
 
 ---

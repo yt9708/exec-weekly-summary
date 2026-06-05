@@ -64,12 +64,19 @@ scheduler.registerPushPipeline(async () => {
   console.log(`[Pipeline] 流水线完成：成功推送 ${result.successCount}/${result.total} 人`);
 });
 
-// 启动定时器
-scheduler.start();
+// Vercel 环境下不启动定时器和端口监听
+const isVercel = process.env.VERCEL === '1';
+if (!isVercel) {
+  // 启动定时器
+  scheduler.start();
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✓ 高管周总结系统已启动: http://127.0.0.1:${PORT}`);
-  console.log(`  - 定时推送: 每周一 08:30 (Asia/Shanghai)`);
-  console.log(`  - 推送目标: leung, zhangwei, wangfang, lichen, zhaoqiang (mock)`);
-});
+  // Start server
+  app.listen(PORT, () => {
+    console.log(`✓ 高管周总结系统已启动: http://127.0.0.1:${PORT}`);
+    console.log(`  - 定时推送: 每周一 08:30 (Asia/Shanghai)`);
+    console.log(`  - 推送目标: leung, zhangwei, wangfang, lichen, zhaoqiang (mock)`);
+  });
+}
+
+// 导出 app 供 Vercel 使用
+module.exports = app;
