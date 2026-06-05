@@ -2,4 +2,3 @@ node_modules/
 .env
 snapshots/
 *.log
-deploy.tar.gz

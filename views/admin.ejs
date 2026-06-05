@@ -1,0 +1,63 @@
+<%- include('partials/admin-header', { title, page }) %>
+<div class="zone" style="background:#fff;min-height:70vh;">
+  <div class="zone-inner">
+    <div class="section-header">
+      <div class="section-icon">🖥️</div>
+      <span class="section-title">管理后台</span>
+      <span class="section-sub">运维监控 · 系统数据</span>
+    </div>
+
+    <!-- 推送日志 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">📨 推送日志 — 最近 <%= admin.pushLogs.length %> 次</div>
+      <% admin.pushLogs.forEach(function(log){ %>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #e3e8ee;">
+        <span style="font-size:11px;padding:3px 10px;background:<%= log.failed > 0 ? '#fef2f2' : '#d1fae5' %>;color:<%= log.failed > 0 ? '#dc2626' : '#065f46' %>;border-radius:9999px;font-weight:600;">
+          <%= log.failed > 0 ? '部分失败' : '成功' %>
+        </span>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:600;"><%= log.week %> 周报推送</div>
+          <div style="font-size:12px;color:#475569;margin-top:2px;"><%= log.total %> 人 · 成功 <%= log.success %> · 失败 <%= log.failed %> · 未推送 <%= log.unpushed %></div>
+        </div>
+        <span style="font-size:13px;font-weight:600;color:<%= log.rate === '100%' ? '#16a34a' : '#eab308' %>;"><%= log.rate %></span>
+      </div>
+      <% }) %>
+    </div>
+
+    <!-- 系统状态 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">📊 系统状态</div>
+      <div class="health-grid">
+        <% admin.systemStatus.forEach(function(s){ %>
+        <div class="health-item"><div class="label"><%= s.label %></div><div class="value"><span class="dot <%= s.status %>"></span> <%= s.value %></div></div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- 用户列表 -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sub-section-title">👥 用户列表 — <%= admin.userList.length + admin.pausedUsers %> 人</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <% admin.userList.forEach(function(u){ %>
+        <span style="font-size:12px;padding:4px 12px;background:#f1f5f9;border-radius:9999px;color:#475569;font-weight:500;"><%= u.name %> · <%= u.role %></span>
+        <% }) %>
+        <span style="font-size:12px;padding:4px 12px;background:#e2e8f0;border-radius:9999px;color:#94a3b8;font-weight:400;">+ <%= admin.pausedUsers %> 人已暂停</span>
+      </div>
+    </div>
+
+    <!-- API 日志 -->
+    <div class="card">
+      <div class="sub-section-title">🔧 API 今日调用 — <%= admin.apiLogs.length %> 次</div>
+      <% admin.apiLogs.forEach(function(log){ %>
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e3e8ee;">
+        <span style="font-size:11px;padding:3px 10px;background:<%= log.method === 'GET' ? '#eff6ff' : '#fefce8' %>;color:<%= log.method === 'GET' ? '#2563eb' : '#a16207' %>;border-radius:9999px;font-weight:600;"><%= log.method %></span>
+        <div style="flex:1;font-size:13px;"><%= log.path %></div>
+        <span style="font-size:12px;color:#94a3b8;"><%= log.time %> · <%= log.statusCode %> · <%= log.duration %></span>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<div class="footer">高管周总结 · 管理后台 · 运维专用 · <a href="/" style="color:#533afd;">返回用户主页</a></div>
+</body>
+</html>
