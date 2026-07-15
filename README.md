@@ -144,7 +144,7 @@ npm install
 npm start
 ```
 
-访问 http://127.0.0.1:3456
+访问 [http://127.0.0.1:3456](https://exec-weekly-summary.bonto.run/)
 
 ### Docker
 
